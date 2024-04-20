@@ -38,7 +38,7 @@ const AdminPageLayout = () => {
           <footer>
             <div className="container-fluid px-4">
               <div className="d-flex align-items-center justify-content-between small">
-                <div>Copyright &copy; Booze Now {new Date().getFullYear()}</div>
+                <div>Copyright &copy; Slugs'n'Shots {new Date().getFullYear()}</div>
                 <div>
                   <Link to="/privacy">{__('Privacy Policy')}</Link>
                   &middot;

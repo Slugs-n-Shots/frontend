@@ -12,7 +12,7 @@ const TopNav = () => {
   return (
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
       <Link data-ek="brand" className="navbar-brand ps-3" to="/">
-        Booze Now
+        Slugs'n'Shots
       </Link>
       <ul className="navbar-nav ms-auto me-3">
         <li className="nav-item dropdown">
