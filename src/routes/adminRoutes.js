@@ -55,11 +55,36 @@ const adminRoutes = [
         "component": "common/Profile",
         "roles": ["admin", 'backoffice']
     },
-    // {
-    //     "path": "/admin/table",
-    //     "component": "admin/Table",
-    //     "roles": ["admin", 'backoffice']
-    // },
+    {
+        "path": "/admin/masters/drinks",
+        "component": "admin/masters/DrinkMaster",
+        "roles": ["admin", 'backoffice']
+    },
+    {
+        "path": "/admin/masters/drink-categories",
+        "component": "admin/masters/DrinkCategoryMaster",
+        "roles": ["admin", 'backoffice']
+    },
+    {
+        "path": "/admin/masters/orders",
+        "component": "admin/masters/OrderMaster",
+        "roles": ["admin", 'backoffice']
+    },
+    {
+        "path": "/admin/masters/receipts",
+        "component": "admin/masters/ReceiptMaster",
+        "roles": ["admin", 'backoffice']
+    },
+    {
+        "path": "/admin/masters/employees",
+        "component": "admin/masters/EmployeeMaster",
+        "roles": ["admin", 'backoffice']
+    },
+    {
+        "path": "/admin/masters/guests",
+        "component": "admin/masters/GuestMaster",
+        "roles": ["admin", 'backoffice']
+    },
 ]
 
 export default adminRoutes

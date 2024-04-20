@@ -2,9 +2,6 @@
     color: white;
 }
 
-.form-control {
-    text-align: center;
-  }
   .notification {
     position: fixed;
     bottom: 20px;
@@ -16,7 +13,7 @@
     z-index: 9999;
     animation: fadeOut 3s ease-in-out;
   }
-  
+
   @keyframes fadeOut {
     0% {
       opacity: 1;
@@ -28,7 +25,7 @@
       opacity: 0;
     }
   }
-  
+
   .counter-input-wrapper {
     width: 80px;
   }

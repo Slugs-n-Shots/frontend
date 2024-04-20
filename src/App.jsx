@@ -26,10 +26,10 @@ function App() {
       || (roles.includes('all')) //  Nincsenek szabályok (mindenki használhatja)
       || (roles.includes('unauth') && !user) // ha nincs bejelentkezett user
       || (roles.includes('auth') && user) // ha van belentkezett user (mindegy milyen szerep)
-      || (roles.includes('bartender') && user && user.role_code === 1) // ha van belentkezett user és az user bartender
-      || (roles.includes('waiter') && user && user.role_code === 0) // ha van belentkezett user és az user waiter
-      || (roles.includes('backoffice') && user && user.role_code === 2) // ha van belentkezett user és az user backoffice
-      || (roles.includes('admin') && user && user.role_code === 3) // ha van belentkezett user és az user admin
+      || (roles.includes('waiter') && user && user.role_code === 1) // ha van belentkezett user és az user waiter
+      || (roles.includes('bartender') && user && user.role_code === 2) // ha van belentkezett user és az user bartender
+      || (roles.includes('backoffice') && user && user.role_code === 3) // ha van belentkezett user és az user backoffice
+      || (roles.includes('admin') && user && user.role_code === 7) // ha van belentkezett user és az user admin
 
     // console.log('checkStaffRoles:', user, roles, path, res)
     return res;

@@ -1,0 +1,21 @@
+.data-table th.sortable {
+    cursor: pointer;
+}
+
+.data-table th.sortable::after {
+    font-size: 70%;
+    padding-left: 1rem;
+    font-weight: 900;
+}
+
+.data-table th.sort-asc::after {
+    content: '\25BC';
+}
+
+.data-table th.sort-desc::after {
+    content: '\25B2';
+}
+
+.data-table td.field-number {
+    text-align: right;
+}
