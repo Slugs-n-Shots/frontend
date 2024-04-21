@@ -19,3 +19,8 @@
 .data-table td.field-number {
     text-align: right;
 }
+
+.modal-dialog .valid-feedback,
+.modal-dialog .invalid-feedback {
+    display: inherit !important;
+}

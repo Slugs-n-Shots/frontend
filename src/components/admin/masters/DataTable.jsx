@@ -19,7 +19,7 @@ const DataTable = (props) => {
   const [objects, setObjects] = useState([]);
   const [masterData, setMasterData] = useState({});
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [modalState, setModalState] = useState({
     object: {},
@@ -54,7 +54,7 @@ const DataTable = (props) => {
         let promises = [get(url + "?nolang=true")];
         Object.keys(masters).forEach((m) => promises.push(get(masters[m].url + "?nolang=true")))
         const [mainResp, ...mastResponses] = await Promise.all(promises);
-        //setError(""); // kitöröljük a hibát
+        //setError({}); // kitöröljük a hibát
         setObjects(mainResp.data); // beállítjuk az objektumok állapotát a válaszban kapott listával
         const masterData = {};
         mastResponses.forEach((response, idx) => {
@@ -69,7 +69,6 @@ const DataTable = (props) => {
             languageCodes.forEach(lang => {
               masterElements[''][lang] = '<' + __(master.nullText ?? 'no data', {}, lang) + '>';
             })
-            console.log('** NULLABLE')
           }
 
           response.data.forEach(item => {
@@ -92,7 +91,7 @@ const DataTable = (props) => {
         setMasterData(masterData)
       } catch (error) {
         setObjects([]); // kiürítjük a objektum listát
-        //setError(error.statusText); // beállíjuk a hiba állapotát
+        setError(error); // beállíjuk a hiba állapotát
         console.warn('DataIndexEvent error:', error);
         //addMessage("danger", error.statusText);
       } finally {
@@ -100,56 +99,6 @@ const DataTable = (props) => {
       }
     }
   }, [get, languages, masters, url, objects, __]);
-
-  /*
-  const _DataIndexEvent = async (forced = false) => {
-    if (objects.length === 0 || forced) {
-      console.log("DataIndexEvent", objects);
-      // console.log('objects', objects)
-      setLoading(true); // bekapcsoljuk a homokórát
-      try {
-
-        let promises = [get(url + "?nolang=true")];
-        Object.keys(masters).forEach((m) => promises.push(get(masters[m].url + "?nolang=true")))
-        const [mainResp, ...otherResps] = await Promise.all(promises);
-        //setError(""); // kitöröljük a hibát
-        setObjects(mainResp.data); // beállítjuk az objektumok állapotát a válaszban kapott listával
-        console.log('objects set', mainResp.data)
-        const masterData = {};
-        otherResps.forEach((response, idx) => {
-          const masterKey = Object.keys(masters)[idx]
-          const master = masters[masterKey]
-
-          console.log(masters, idx, master, response.data)
-          const masterElements = {};
-          response.data.forEach(item => {
-            masterElements[item.id] = {}
-            languageCodes.forEach(lang => {
-              if (item.hasOwnProperty('name_' + lang)) {
-                masterElements[item.id][lang] = item['name_' + lang];
-              }
-            })
-            if (item.hasOwnProperty('name')) {
-              masterElements[item.id][''] = item['name'];
-            }
-          });
-
-          masterData[masterKey] = masterElements;
-          // response
-        })
-
-        setMasterData(masterData)
-      } catch (error) {
-        setObjects([]); // kiürítjük a objektum listát
-        //setError(error.statusText); // beállíjuk a hiba állapotát
-        console.warn('DataIndexEvent error:', error);
-        //addMessage("danger", error.statusText);
-      } finally {
-        setLoading(false); // kikapcsoljuk a homokórát
-      }
-    }
-  };
-  */
 
   useEffect(() => {
     // console.log('DataTable useEffect')
@@ -199,59 +148,56 @@ const DataTable = (props) => {
     });
   };
 
-  const DataStoreEvent = (object) => {
+  const DataStoreEvent = async (object) => {
     // Elküldi az új objektumot a szervernek.
     let result = false;
     console.log("DataStoreEvent", object);
     setLoading(true);
-    post(url + "?nolang=true", object)
-      .then((response) => {
-        console.log(response);
-        setError("");
-        setObjects([...objects, response]);
-        result = true;
-      })
-      .catch((error) => {
-        setError(error.statusText);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const response = await post(url + "?nolang=true", object)
+      console.log(response);
+      setError({});
+      setObjects([...objects, response]);
+      result = true;
+    }
+    catch (error) {
+      setError(error);
+    }
+    finally {
+      setLoading(false);
+    }
     return result;
   }
 
-  const DataUpdateEvent = (object) => {
+  const DataUpdateEvent = async (object) => {
     // Elküldi a létező objektumot a szervernek.
     let result = false;
 
     console.log("DataUpdateEvent", object);
     setLoading(true);
-    put(`${url}/${object.id}?nolang=true`, object)
-      .then((response) => {
-        const data = response.data;
-        console.log('DataUpdateEvent data', data);
-        setError("");
-        const idx = objects.findIndex((u) => data.id === u.id); // megkeressük a módosított objektum indexét a a listában
-        const newObjects = [...objects]; // lemásoljuk a listát
-        console.log('csere', idx, data, newObjects[idx]);
-        newObjects[idx] = data; // kicseréljük a módosított objektumot az újra.
+    try {
+      const response = await put(`${url}/${object.id}?nolang=true`, object)
+      const data = response.data;
+      console.log('DataUpdateEvent data?', response.data);
+      setError({});
+      const idx = objects.findIndex((u) => data.id === u.id); // megkeressük a módosított objektum indexét a a listában
+      const newObjects = [...objects]; // lemásoljuk a listát
+      console.log('csere', idx, data, newObjects[idx]);
+      newObjects[idx] = data; // kicseréljük a módosított objektumot az újra.
 
-        console.log('newObjects', newObjects); // újrarenderelünk
-        setObjects(newObjects); // újrarenderelünk
-        result = true;
-      })
-      .catch((error) => {
-        setError(error.statusText);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      console.log('newObjects', newObjects); // újrarenderelünk
+      setObjects(newObjects); // újrarenderelünk
+      result = true;
+
+    }
+    catch (error) {
+      setError(error);
+    }
+    finally {
+      setLoading(false);
+    }
     return result;
   };
-
-  // const updateObjectList(id, newObj) {
-
-  // }
 
   const DataDeleteEvent = (object) => {
     // Törli a objektumot.
@@ -263,7 +209,7 @@ const DataTable = (props) => {
     deletex(`${url}/${object.id}`)
       .then((response) => {
         console.log(response);
-        setError("");
+        setError({});
         const idx = objects.findIndex((u) => object.id === u.id); // megkeressük a törölt objektumot
         const newObjects = [...objects]; // lemásoljuk a listát
         newObjects.splice(idx, 1); // kitöröljük a törölt objektumot
@@ -271,13 +217,18 @@ const DataTable = (props) => {
         result = true;
       })
       .catch((error) => {
-        setError(error.statusText);
+        setError(error);
       })
       .finally(() => {
         setLoading(false);
       });
     return result;
   };
+
+  const ModalCloseEvent = (object) => {
+    setError({})
+    setModalState({ ...modalState, visible: false })
+  }
 
   // Egy objektumba összegyűjtöttük a függvényeket, amiket a lista hívhat, egy tulajdonságként tudjuk így küldeni a props-nak.
   // A függvények referenciáit használjuk, nem hívjuk őket!
@@ -289,10 +240,11 @@ const DataTable = (props) => {
     edit: DataEditEvent,
     update: DataUpdateEvent,
     destroy: DataDeleteEvent,
+    close: ModalCloseEvent,
   };
-
+  console.log('error', error)
   return (
-    <DataContext.Provider value={{ ...props, events, model, objects, masterData, sortCol, sortDir, addSort }}>
+    <DataContext.Provider value={{ ...props, events, model, objects, masterData, error, sortCol, sortDir, addSort }}>
       <article>
         <h2>{__(":model list", { 'model': __(model.name) })}</h2>
         {/* az onClick-ben a fenti events objektum create-jét hívjuk */}
@@ -300,7 +252,7 @@ const DataTable = (props) => {
           {__("New :model", { 'model': __(model.name) })}
         </Button>
         {/* feltétel && ... módon lehet feltételhez kötni a renderelést. Itt: ha van hiba, megjelenik az értesítési sáv. */}
-        {error && <Alert variant={"danger"}>{error}</Alert>}
+        {error && error.hasOwnProperty('statusText') && <Alert variant={"danger"}>{error.statusText}</Alert>}
         <Spinner shown={loading} />
         <Table events={events} objects={objects} />
         {modalState && <DataModal state={modalState} setState={setModalState} />}

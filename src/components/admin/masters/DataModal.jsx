@@ -1,8 +1,3 @@
-// import { useEffect, useState } from "react";
-// import Button from "react-bootstrap/Button";
-// import Modal from "react-bootstrap/Modal";
-// import Form from "react-bootstrap/Form";
-
 import { useData } from "components/admin/masters/DataTable";
 import { useTranslation } from "contexts/TranslationContext.js";
 import { capitalize } from "models/MiscHelper.js";
@@ -10,28 +5,27 @@ import { useEffect, useState } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 
 
-function DataModal({ state, setState }) {
-  const { model, fields, masterData } = useData()
+function DataModal({ state }) {
+  const { model, fields, error, events } = useData()
+  const [formValid, setFormValid] = useState(false);
   const { __ } = useTranslation();
   // object, readOnly, visible, setShow, onSave
   const [formData, setFormData] = useState({ ...state.object });
-
-  // const [dob, setDob] = useState(new Date());
-  // console.log(state);
-
-  // console.log('masterData', masterData)
-
   useEffect(() => {
     setFormData(state.object);
-    // setDob(state?.object.dob);
+    setFormValid(false)
   }, [state.object]);
 
-  const handleClose = () => setState({ ...state, visible: false });
-  const handleSave = () => {
+  const handleClose = () => events.close(formData);
+  const handleSave = async () => {
     if (state?.saveEvent) {
-      state?.saveEvent(formData);
+      const result = await state?.saveEvent(formData)
+      setFormValid(false)
+      if (result) {
+        setFormValid(true)
+        handleClose();
+      }
     }
-    handleClose();
   };
 
   // pre-checks - if modal's been shown
@@ -40,12 +34,11 @@ function DataModal({ state, setState }) {
     if (state?.readOnly && !state?.object) console.log("readonly empty object");
   }
 
-  // Handle form input changes 
+  // Handle form input changes
   const handleChange = (event) => {
     if (!(state?.readOnly ?? false)) {
       const field = event.target.name;
-      const value = event.target.type !== "checkbox"? event.target.value: event.target.checked
-
+      const value = event.target.type !== "checkbox" ? event.target.value : event.target.checked
 
       console.log("handleChange", 'target:', field, 'value:', value, 'formData:', formData);
       const newFormData = { ...formData, [field]: value };
@@ -55,11 +48,19 @@ function DataModal({ state, setState }) {
   };
 
   const title = __(state?.readOnly ? 'View :model' : (formData.id ? 'Edit :model' : 'New :model'), { model: __(model.name) })
-  //  'Edit :model',  __(formData.id
-  // //   ? `${formData.name || '[' + __("unnamed") + ']'} ${state?.readOnly ? " megtekintése" : " szerkesztése"
-  // //   }`
-  // //   : "New :model"), { model_name: 'modelname'});
-  // const title = "?";
+
+  const fieldErrors = ((e) => {
+    console.log(error)
+    const ret = {};
+
+    if (error && Object.keys(error)) {
+      ret['message'] = error?.statusText ?? "";
+      ret['fields'] = error?.response?.data?.errors ?? {};
+    }
+    return ret;
+  })();
+
+  console.log('fieldErrors', fieldErrors);
 
   return (
     <>
@@ -74,7 +75,10 @@ function DataModal({ state, setState }) {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {/* {JSON.stringify(fieldErrors)} */}
           <Form
+
+            valid={formValid? "valid": "invalid"}
             onSubmit={() => {
               console.log("submit!");
             }}
@@ -87,6 +91,8 @@ function DataModal({ state, setState }) {
                   readOnly={e.readOnly ?? false}
                   onChange={handleChange}
                   value={formData[e.name] || ""}
+                  valid={!(fieldErrors?.fields?.[e.name] ?? []).length}
+                  messages={fieldErrors?.fields?.[e.name] ?? []}
                   name={e.name} />
               case 'longstring':
                 return <LongTextField key={i}
@@ -94,6 +100,8 @@ function DataModal({ state, setState }) {
                   readOnly={e.readOnly ?? false}
                   onChange={handleChange}
                   value={formData[e.name] || ""}
+                  valid={!(fieldErrors?.fields?.[e.name] ?? []).length}
+                  messages={fieldErrors?.fields?.[e.name] ?? []}
                   name={e.name} />
               case 'boolean':
                 // console.log('bool', e, formData, formData[e.name])
@@ -102,14 +110,17 @@ function DataModal({ state, setState }) {
                   readOnly={e.readOnly ?? false}
                   onChange={handleChange}
                   value={formData[e.name]}
+                  valid={!(fieldErrors?.fields?.[e.name] ?? []).length}
+                  messages={fieldErrors?.fields?.[e.name] ?? []}
                   name={e.name} />
-
               case 'master':
                 return <SelectField key={i}
                   title={e.title}
                   readOnly={e.readOnly ?? false}
                   onChange={handleChange}
                   value={formData[e.name] || ""}
+                  valid={!(fieldErrors?.fields?.[e.name] ?? []).length}
+                  messages={fieldErrors?.fields?.[e.name] ?? []}
                   name={e.name} />
 
               default:
@@ -157,10 +168,13 @@ const SelectField = (props) => {
         value={props.value}
         onChange={props.onChange}
         name={props.name}
-      >
+        validated={false}
+        >
         {master && Object.entries(master).map(([key, value], i) => <option key={i} value={key}>{value[language]}</option>)}
-
       </Form.Select>
+      <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
+      {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
+    </Form.Control.Feedback>
     </Form.Group>
   )
 }
@@ -184,6 +198,9 @@ const BooleanField = (props) => {
         name={props.name}
         checked={props.value === true}
       />
+      <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
+        {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
+      </Form.Control.Feedback>
     </Form.Group>)
 }
 
@@ -192,13 +209,18 @@ const TextField = (props) => {
 
   return (<Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
     <Form.Label>{__(props.title)}</Form.Label>
+    {/* <div>{JSON.stringify({messages: props.messages, valid: props?.valid ?? "?"})}</div> */}
     <Form.Control
       type="text"
       readOnly={props.readOnly ?? false}
       value={props.value}
       onChange={props.onChange}
       name={props.name}
+      validated={false}
     />
+    <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
+      {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
+    </Form.Control.Feedback>
   </Form.Group>
   )
 }
@@ -216,6 +238,10 @@ const LongTextField = (props) => {
       onChange={props.onChange}
       name={props.name}
     />
+    <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
+      {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
+
+    </Form.Control.Feedback>
   </Form.Group>
   )
 }
