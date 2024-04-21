@@ -61,8 +61,17 @@ const DataTable = (props) => {
           const masterKey = Object.keys(masters)[idx]
           const master = masters[masterKey]
 
-          console.log(masters, idx, master, response.data)
+          //console.log(masters, idx, master, response.data)
           const masterElements = {};
+
+          if (master.nullable) {
+            masterElements[''] = {}
+            languageCodes.forEach(lang => {
+              masterElements[''][lang] = '<' + __(master.nullText ?? 'no data', {}, lang) + '>';
+            })
+            console.log('** NULLABLE')
+          }
+
           response.data.forEach(item => {
             masterElements[item.id] = {}
             languageCodes.forEach(lang => {
@@ -74,6 +83,7 @@ const DataTable = (props) => {
               masterElements[item.id][''] = item['name'];
             }
           });
+          console.log('masterElements', masterElements)
 
           masterData[masterKey] = masterElements;
           // response
@@ -89,7 +99,7 @@ const DataTable = (props) => {
         setLoading(false); // kikapcsoljuk a homokórát
       }
     }
-  }, [get, languages, masters, url, objects]);
+  }, [get, languages, masters, url, objects, __]);
 
   /*
   const _DataIndexEvent = async (forced = false) => {
@@ -191,7 +201,7 @@ const DataTable = (props) => {
 
   const DataStoreEvent = (object) => {
     // Elküldi az új objektumot a szervernek.
-
+    let result = false;
     console.log("DataStoreEvent", object);
     setLoading(true);
     post(url + "?nolang=true", object)
@@ -199,6 +209,7 @@ const DataTable = (props) => {
         console.log(response);
         setError("");
         setObjects([...objects, response]);
+        result = true;
       })
       .catch((error) => {
         setError(error.statusText);
@@ -206,10 +217,12 @@ const DataTable = (props) => {
       .finally(() => {
         setLoading(false);
       });
+    return result;
   }
 
   const DataUpdateEvent = (object) => {
     // Elküldi a létező objektumot a szervernek.
+    let result = false;
 
     console.log("DataUpdateEvent", object);
     setLoading(true);
@@ -225,6 +238,7 @@ const DataTable = (props) => {
 
         console.log('newObjects', newObjects); // újrarenderelünk
         setObjects(newObjects); // újrarenderelünk
+        result = true;
       })
       .catch((error) => {
         setError(error.statusText);
@@ -232,6 +246,7 @@ const DataTable = (props) => {
       .finally(() => {
         setLoading(false);
       });
+    return result;
   };
 
   // const updateObjectList(id, newObj) {
@@ -241,6 +256,7 @@ const DataTable = (props) => {
   const DataDeleteEvent = (object) => {
     // Törli a objektumot.
     // Kellene ide egy megerősítés is a kérés kiküldése előtt.
+    let result = false;
 
     console.log("DataDeleteEvent", object);
     setLoading(true);
@@ -252,6 +268,7 @@ const DataTable = (props) => {
         const newObjects = [...objects]; // lemásoljuk a listát
         newObjects.splice(idx, 1); // kitöröljük a törölt objektumot
         setObjects(newObjects); // újrarenderelelés
+        result = true;
       })
       .catch((error) => {
         setError(error.statusText);
@@ -259,6 +276,7 @@ const DataTable = (props) => {
       .finally(() => {
         setLoading(false);
       });
+    return result;
   };
 
   // Egy objektumba összegyűjtöttük a függvényeket, amiket a lista hívhat, egy tulajdonságként tudjuk így küldeni a props-nak.
@@ -378,6 +396,7 @@ function TableRow(props) {
           case 'longstring':
             return (<td key={idx}>{object[col.name]}</td>)
           case 'master':
+            // console.log('master', object, col)
             return (<TableColLookup key={idx} master={col.dataModel} value={object[col.name]}></TableColLookup>)
           case 'boolean':
             const objValue = object[col.name];
@@ -395,7 +414,10 @@ function TableColLookup(props) {
   const { masterData } = useData();
   const { language } = useTranslation();
   const master = masterData[props.master]
-  const value = master[props.value][language]
+  const value = master[props.value] ? master[props.value][language] : '';
+
+  //console.log('TableColLookup', master, props)
+  // const value = '?';
   return <td>{value}</td>
 }
 

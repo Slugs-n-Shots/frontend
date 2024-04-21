@@ -80,6 +80,9 @@ const translations_hu = {
     'Drink Categories': 'Ital kategóriák',
     'Guests': 'Vendégek',
     'Receipts': 'Bizonylatok',
+    'no data': 'nincs adat',
+    'No Parent': 'Nincs szülő',
+    'Parent Category': 'Szülő kategória',
 }
 
 export default translations_hu;

@@ -3,22 +3,19 @@ import DataTable from "components/admin/masters/DataTable.jsx";
 const DrinkCategoryMaster = () => {
 
   const fields = [
-    { name: 'id', title: 'id', dataType: 'number', readOnly: true, displayIn: ['table'], sortable: true },
-    { name: 'name_en', title: 'Name (en)', dataType: 'string', readOnly: false, displayIn: ['table', 'form'], sortable: true },
-    { name: 'name_hu', title: 'Name (hu)', dataType: 'string', readOnly: false, displayIn: ['table', 'form'], sortable: true },
-    { name: 'description_en', title: 'Description (en)', dataType: 'longstring', readOnly: false, displayIn: ['table', 'form'], sortable: true },
-    { name: 'description_hu', title: 'Description (hu)', dataType: 'longstring', readOnly: false, displayIn: ['table', 'form'], sortable: true },
-    { name: 'category_id', title: 'Category', dataType: 'master', dataModel: 'categories', readOnly: false, displayIn: ['table', 'form'], sortable: true },
-    { name: 'active', title: 'Active', dataType: 'boolean', values: ['No', 'Yes'], readOnly: false, displayIn: ['table', 'form'], sortable: true },
+    { name: 'id', title: 'id', dataType: 'number', readOnly: true, displayIn: ['table'], sortable: true, nullable: true },
+    { name: 'name_en', title: 'Name (en)', dataType: 'string', readOnly: false, displayIn: ['table', 'form'], sortable: true, nullable: false },
+    { name: 'name_hu', title: 'Name (hu)', dataType: 'string', readOnly: false, displayIn: ['table', 'form'], sortable: true, nullable: false },
+    { name: 'parent_id', title: 'Parent Category', dataType: 'master', dataModel: 'categories', readOnly: false, displayIn: ['table', 'form'], sortable: true, nullable: true },
   ];
 
   const masters = {
-    'categories': { url: 'categories', key: 'id', value: 'name' }
+    'categories': { url: 'categories/parents', key: 'id', value: 'name', nullable: true, nullText: "No Parent" }
   }
 
   const model = {
-    name: 'Drink',
-    namePlural: 'Drinks',
+    name: 'Drink Category',
+    namePlural: 'Drink Categories',
   }
 
   const validateInsert = (object) => {
@@ -37,7 +34,7 @@ const DrinkCategoryMaster = () => {
 
   return (
     <DataTable
-      url="drinks"
+      url="categories"
       model={model}
       fields={fields}
       masters={masters}

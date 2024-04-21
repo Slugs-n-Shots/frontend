@@ -26,10 +26,10 @@ export const TranslationProvider = ({ children }) => {
         }
     }
 
-    function __(text, replace = {}) {
-        if (language !== 'en') {
-            text = translations[language][text] ?? text
-            if (!translations[language][text]) {
+    function __(text, replace = {}, lang = language) {
+        if (lang !== 'en') {
+            text = translations[lang][text] ?? text
+            if (!translations[lang][text]) {
                 const existing = localStorage.getItem('missing_translations')
                 let missing = existing ? JSON.parse(existing) : [];
                 // fs.appendFile('./logs/error_log.txt', text);
