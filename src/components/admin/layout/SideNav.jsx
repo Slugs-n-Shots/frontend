@@ -19,10 +19,10 @@ const SideNav = () => {
   }
 
   console.log(user)
-  console.log('waiter', userHasRole('waiter'))
-  console.log('bartender', userHasRole('bartender'))
-  console.log('backoffice', userHasRole('backoffice'))
-  console.log('admin', userHasRole('admin'))
+  // console.log('waiter', userHasRole('waiter'))
+  // console.log('bartender', userHasRole('bartender'))
+  // console.log('backoffice', userHasRole('backoffice'))
+  // console.log('admin', userHasRole('admin'))
 
   return (
     <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
