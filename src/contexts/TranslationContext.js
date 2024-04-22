@@ -20,10 +20,21 @@ export const TranslationProvider = ({ children }) => {
         'hu': translations_hu
     };
 
+    const locales = {
+        "en": 'en-GB',
+        "hu": 'hu-HU',
+    }
+
     function changeLanguage(newLang) {
         if (newLang === "en" || translations[newLang]) {
             setConfig(CONFIG_KEY_LANGUAGE, newLang);
         }
+    }
+
+    function formatDate(date, lang = language) {
+        const d = new Date(date);
+        console.log(d)
+        return d.toLocaleDateString(locales[lang] ?? locales['hu']);
     }
 
     function __(text, replace = {}, lang = language) {
@@ -48,7 +59,7 @@ export const TranslationProvider = ({ children }) => {
     }
 
     return (
-        <TranslationContext.Provider value={{ language, languages, __, changeLanguage }}>
+        <TranslationContext.Provider value={{ language, languages, __, changeLanguage, formatDate }}>
             {children}
         </TranslationContext.Provider>
     );

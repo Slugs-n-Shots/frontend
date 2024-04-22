@@ -43,22 +43,6 @@ const SideNav = () => {
               {__('Employees')}
             </NavLink>
           )}
-          {userHasRoles(['bartender', 'backoffice']) && (
-            <NavLink className="nav-link" to="/admin/masters/orders">
-              <div className="sb-nav-link-icon">
-                <i className="fas fa-tachometer-alt"></i>
-              </div>
-              {__('Orders')}
-            </NavLink>
-          )}
-          {userHasRoles(['bartender', 'backoffice']) && (
-            <NavLink className="nav-link" to="/admin/masters/receipts">
-              <div className="sb-nav-link-icon">
-                <i className="fas fa-tachometer-alt"></i>
-              </div>
-              {__('Receipts')}
-            </NavLink>
-          )}
 
           {/* new */}
           <div className="sb-sidenav-menu-heading">Interface</div>
@@ -115,6 +99,22 @@ const SideNav = () => {
                     <i className="fas fa-address-book"></i>
                   </div>
                   {__('Employees')}
+                </NavLink>
+              )}
+              {userHasRoles(['bartender', 'backoffice']) && (
+                <NavLink className="nav-link" to="/admin/masters/orders">
+                  <div className="sb-nav-link-icon">
+                    <i className="fas fa-list-check"></i>
+                  </div>
+                  {__('Orders')}
+                </NavLink>
+              )}
+              {userHasRoles(['bartender', 'backoffice']) && (
+                <NavLink className="nav-link" to="/admin/masters/receipts">
+                  <div className="sb-nav-link-icon">
+                    <i className="fas fa-receipt"></i>
+                  </div>
+                  {__('Receipts')}
                 </NavLink>
               )}
             </nav>

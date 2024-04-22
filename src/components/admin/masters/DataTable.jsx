@@ -10,7 +10,7 @@ const DataContext = createContext();
 export const useData = () => useContext(DataContext);
 
 const DataTable = (props) => {
-  const { get, post, put, deletex } = useApi();
+  const { get, post, put, deleteX } = useApi();
   const { languages, __ } = useTranslation();
 
 
@@ -204,7 +204,7 @@ const DataTable = (props) => {
 
     console.log("DataDeleteEvent", object);
     setLoading(true);
-    deletex(`${url}/${object.id}`)
+    deleteX(`${url}/${object.id}`)
       .then((response) => {
         // console.log(response);
         setError({});
@@ -317,24 +317,27 @@ function TableBody() {
 }
 
 function TableRow(props) {
-  const { fields, events } = useData()
+  const { fields, events, model } = useData()
   const { __, formatDate } = useTranslation();
   let object = props.object;
   return (
     <tr>
       <td style={{ "whiteSpace": "nowrap" }}>
         <i
-          className="fa-solid fa-magnifying-glass"
+          className="action-show fa-solid fa-magnifying-glass"
+          title={__('View this :model', { 'model': __(model.name) })}
           onClick={() => {
             events.show(object);
           }}
         ></i>&nbsp;<i
-          className="fa-regular fa-pen-to-square"
+          className="action-edit fa-regular fa-pen-to-square"
+          title={__('Edit this :model', { 'model': __(model.name) })}
           onClick={() => {
             events.edit(object, events.update);
           }}
         ></i>&nbsp;<i
-          className="fa-regular fa-trash-can"
+          className="action-delete fa-regular fa-trash-can"
+          title={__('Delete this :model', { 'model': __(model.name) })}
           onClick={() => {
             events.destroy(object);
           }}

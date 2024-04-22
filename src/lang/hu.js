@@ -91,6 +91,9 @@ const translations_hu = {
     'Bartender': 'Csapos',
     'Backoffice': 'Backoffice',
     'Waiter': 'Pincér',
+    'View this :model': 'A(z) :model megtekintése',
+    'Edit this :model': 'A(z) :model szerkesztése',
+    'Delete this :model': 'A(z) :model törlése',
 }
 
 export default translations_hu;
