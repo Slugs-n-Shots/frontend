@@ -297,6 +297,8 @@ function TableBody() {
           case 'longstring':
           case 'string':
             return a[sortCol].localeCompare(b[sortCol]) * (sortDir === 'asc' ? 1 : -1);
+          case 'date':
+            return Date.parse(a[sortCol]) - Date.parse(b[sortCol]);
           default:
             return 0;
         }
@@ -316,7 +318,7 @@ function TableBody() {
 
 function TableRow(props) {
   const { fields, events } = useData()
-  const { __ } = useTranslation();
+  const { __, formatDate } = useTranslation();
   let object = props.object;
   return (
     <tr>
@@ -344,6 +346,8 @@ function TableRow(props) {
           case 'string':
           case 'longstring':
             return (<td key={idx}>{object[col.name]}</td>)
+          case 'date':
+            return (<td key={idx}>{formatDate(object[col.name])}</td>)
           case 'master':
             // console.log('master', object, col)
             return (<TableColLookup key={idx} master={col.dataModel} value={object[col.name]}></TableColLookup>)

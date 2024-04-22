@@ -9,11 +9,12 @@ const EmployeeMaster = () => {
     { name: 'last_name', title: 'Last Name', dataType: 'string', readOnly: false, displayIn: ['table', 'form'], sortable: true },
     { name: 'email', title: 'Email', dataType: 'string', readOnly: false, displayIn: ['table', 'form'], sortable: true },
     { name: 'role_code', title: 'Role', dataType: 'master', dataModel: 'roles', readOnly: false, displayIn: ['table', 'form'], sortable: true },
+    { name: 'created_at', title: 'Registration Date', dataType: 'date', readOnly: true, displayIn: ['table'], sortable: true },
     { name: 'active', title: 'Active', dataType: 'boolean', values: ['No', 'Yes'], readOnly: false, displayIn: ['table', 'form'], sortable: true },
   ];
 
   const masters = {
-    'roles': { url: 'employee/roles', key: 'id', value: 'name' }
+    'roles': { url: 'employees/roles', key: 'id', value: 'name' }
   }
 
   const model = {
