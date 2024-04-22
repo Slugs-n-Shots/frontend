@@ -34,9 +34,10 @@ const translations_hu = {
     'Enter your email address and we will send you a link to reset your password.': 'Add meg az email címedet, és küldünk egy linket a jelszavad visszaállításához.',
     'Enter your first name': 'Add meg a keresztneved',
     'First name': 'Keresztnév',
-    'First Name': 'keresztnév',
+    'First Name': 'Keresztnév',
     'Last name': 'Vezetéknév',
-    'Last Name': 'vezetéknév',
+    'Last Name': 'Vezetéknév',
+    'Middle Name': 'Második név',
     'Enter your last name': 'Add meg a vezetékneved',
     'Create a password': 'Jelszó létrehozása',
     'Confirm password': 'Jelszó megerősítése',
@@ -56,6 +57,7 @@ const translations_hu = {
     'Edit :model': ':model szerkesztése',
     'Actions': 'Műveletek',
     'Drink': 'Ital',
+    'Role': 'Szerep',
     'Name (en)': 'Név (en)',
     'Name (hu)': 'Név (hu)',
     'Description (en)': 'Leírás (en)',
@@ -74,6 +76,7 @@ const translations_hu = {
     'Active': 'Aktív',
     'Yes': 'Igen',
     'No': 'Nem',
+    'Employee': 'Alkalmazott',
     'Employees': 'Alkalmazottak',
     'Master data': 'Törzsadatok',
     'Drinks': 'Italok',
@@ -83,6 +86,14 @@ const translations_hu = {
     'no data': 'nincs adat',
     'No Parent': 'Nincs szülő',
     'Parent Category': 'Szülő kategória',
+    'none': 'nincs',
+    'Admin': 'Admin',
+    'Bartender': 'Csapos',
+    'Backoffice': 'Backoffice',
+    'Waiter': 'Pincér',
 }
 
 export default translations_hu;
+
+
+

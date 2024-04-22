@@ -82,7 +82,7 @@ const DataTable = (props) => {
               masterElements[item.id][''] = item['name'];
             }
           });
-          console.log('masterElements', masterElements)
+          // console.log('masterElements', masterElements)
 
           masterData[masterKey] = masterElements;
           // response
@@ -155,7 +155,6 @@ const DataTable = (props) => {
     setLoading(true);
     try {
       const response = await post(url + "?nolang=true", object)
-      console.log(response);
       setError({});
       setObjects([...objects, response]);
       result = true;
@@ -178,14 +177,13 @@ const DataTable = (props) => {
     try {
       const response = await put(`${url}/${object.id}?nolang=true`, object)
       const data = response.data;
-      console.log('DataUpdateEvent data?', response.data);
+      // console.log('DataUpdateEvent data', data);
       setError({});
       const idx = objects.findIndex((u) => data.id === u.id); // megkeressük a módosított objektum indexét a a listában
       const newObjects = [...objects]; // lemásoljuk a listát
-      console.log('csere', idx, data, newObjects[idx]);
       newObjects[idx] = data; // kicseréljük a módosított objektumot az újra.
 
-      console.log('newObjects', newObjects); // újrarenderelünk
+      // console.log('newObjects', newObjects); // újrarenderelünk
       setObjects(newObjects); // újrarenderelünk
       result = true;
 
@@ -208,7 +206,7 @@ const DataTable = (props) => {
     setLoading(true);
     deletex(`${url}/${object.id}`)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setError({});
         const idx = objects.findIndex((u) => object.id === u.id); // megkeressük a törölt objektumot
         const newObjects = [...objects]; // lemásoljuk a listát
@@ -242,7 +240,6 @@ const DataTable = (props) => {
     destroy: DataDeleteEvent,
     close: ModalCloseEvent,
   };
-  console.log('error', error)
   return (
     <DataContext.Provider value={{ ...props, events, model, objects, masterData, error, sortCol, sortDir, addSort }}>
       <article>

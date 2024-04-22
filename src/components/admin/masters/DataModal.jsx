@@ -39,10 +39,7 @@ function DataModal({ state }) {
     if (!(state?.readOnly ?? false)) {
       const field = event.target.name;
       const value = event.target.type !== "checkbox" ? event.target.value : event.target.checked
-
-      console.log("handleChange", 'target:', field, 'value:', value, 'formData:', formData);
       const newFormData = { ...formData, [field]: value };
-      console.log("handleChange", 'new:', newFormData);
       setFormData(newFormData);
     }
   };
@@ -50,7 +47,7 @@ function DataModal({ state }) {
   const title = __(state?.readOnly ? 'View :model' : (formData.id ? 'Edit :model' : 'New :model'), { model: __(model.name) })
 
   const fieldErrors = ((e) => {
-    console.log(error)
+    // console.log(error)
     const ret = {};
 
     if (error && Object.keys(error)) {
@@ -60,7 +57,7 @@ function DataModal({ state }) {
     return ret;
   })();
 
-  console.log('fieldErrors', fieldErrors);
+  // console.log('fieldErrors', fieldErrors);
 
   return (
     <>
@@ -104,7 +101,6 @@ function DataModal({ state }) {
                   messages={fieldErrors?.fields?.[e.name] ?? []}
                   name={e.name} />
               case 'boolean':
-                // console.log('bool', e, formData, formData[e.name])
                 return <BooleanField key={i}
                   title={e.title}
                   readOnly={e.readOnly ?? false}
@@ -183,7 +179,6 @@ const BooleanField = (props) => {
   const { __ } = useTranslation();
   // console.log('boolean field', props)
   const handleCheckboxChange = (e) => {
-    console.log('handleCheckboxChange2', e)
     props.onChange(e)
   };
   // value={props.value}
