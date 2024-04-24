@@ -3,6 +3,7 @@ import ToggleTheme from "components/common/ToggleTheme.jsx";
 import { useTranslation } from "contexts/TranslationContext.js";
 import { useUser } from "contexts/UserContext.js";
 // import { useConfig } from "contexts/ConfigContext.js";
+import config from "models/config";
 
 const TopNav = () => {
   const { __, language, languages, changeLanguage } = useTranslation();
@@ -12,7 +13,7 @@ const TopNav = () => {
   return (
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
       <Link data-ek="brand" className="navbar-brand ps-3" to="/">
-        Slugs'n'Shots
+        {config.appName}
       </Link>
       <ul className="navbar-nav ms-auto me-3">
         <li className="nav-item dropdown">

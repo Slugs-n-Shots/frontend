@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "contexts/TranslationContext";
 import { Link } from "react-router-dom";
+import config from "models/config";
 
 const NoPage = (props) => {
   const { __ } = useTranslation();
@@ -30,7 +31,7 @@ const NoPage = (props) => {
           <footer className="py-4 bg-light mt-auto">
             <div className="container-fluid px-4">
               <div className="d-flex align-items-center justify-content-between small">
-                <div className="text-muted">Copyright &copy; Slugs'n'Shots 2023-2024</div>
+                <div className="text-muted">Copyright &copy; {config.appName} 2023-2024</div>
                 <div>
                   {/* <a href="#">Privacy Policy</a>
                                 &middot;

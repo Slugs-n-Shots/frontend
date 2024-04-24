@@ -7,6 +7,7 @@ import { chooseLanguage } from "./MiscHelper";
 const baseURL = 'http://localhost:8000/api/';
 
 const config = {
+    appName: 'Slugs\'n\'Shots',
     lang: chooseLanguage() ?? 'hu',
     baseURL: baseURL,
     user: null,

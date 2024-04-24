@@ -1,3 +1,5 @@
+import config from "models/config";
+
 export default function AboutUs(){
 
   return (
@@ -9,7 +11,7 @@ export default function AboutUs(){
 
       {/* You can add additional styling or Bootstrap classes for the footer */}
       <footer className="mt-5">
-        <p>&copy;2024 Slugs'n'Shots project</p>
+        <p>&copy;2024 {config.appName} project</p>
       </footer>
     </div>
   );

@@ -1,3 +1,5 @@
+import config from "models/config";
+
 export default function Terms(){
 
     return (
@@ -5,7 +7,7 @@ export default function Terms(){
         <h2>Terms of use</h2>
         <p>&nbsp;</p>
         <footer className="mt-5">
-          <p>&copy; 2024 Slugs'n'Shots Project</p>
+          <p>&copy; 2024 {config.appName} Project</p>
         </footer>
       </div>
     );

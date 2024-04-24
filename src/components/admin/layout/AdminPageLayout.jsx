@@ -5,6 +5,7 @@ import SideNav from "./SideNav";
 import ContentArea from "components/common/ContentArea";
 import { useConfig } from "contexts/ConfigContext";
 import { useTranslation } from "contexts/TranslationContext";
+import config from "models/config";
 
 const AdminPageLayout = () => {
   // az alábbi két sor fontos, ne töröld ki, köszi! <3
@@ -38,7 +39,7 @@ const AdminPageLayout = () => {
           <footer>
             <div className="container-fluid px-4">
               <div className="d-flex align-items-center justify-content-between small">
-                <div>Copyright &copy; Slugs'n'Shots {new Date().getFullYear()}</div>
+                <div>Copyright &copy; {config.appName} {new Date().getFullYear()}</div>
                 <div>
                   <Link to="/privacy">{__('Privacy Policy')}</Link>
                   &middot;
