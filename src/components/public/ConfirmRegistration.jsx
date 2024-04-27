@@ -31,9 +31,7 @@ const ConfirmRegistration = () => {
 
     return (
         <div>
-            <h2>Registration Confirmed!</h2>
-            <p>Id: #{id}</p>
-            <p>token: #{token}</p>
+            <h2>{__('Registration Confirmed!')}</h2>
             {!confirmed ? <p>{__('Finalizing registration, please wait.')}</p> : <p>{__('Now you can log in.')}</p>}
         </div>
     )

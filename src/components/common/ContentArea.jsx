@@ -5,10 +5,10 @@ import { Outlet } from "react-router-dom";
 const ContentArea = () => {
   return (
     <div id="content-area">
-      <div>contentArea</div>
+      {/* <div>contentArea</div> */}
       <MessageArea />
       <Outlet />
-      <div>/contentArea</div>
+      {/* <div>/contentArea</div> */}
     </div>
   );
 };

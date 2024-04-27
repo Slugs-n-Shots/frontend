@@ -94,9 +94,14 @@ const translations_hu = {
     'View this :model': 'A(z) :model megtekintése',
     'Edit this :model': 'A(z) :model szerkesztése',
     'Delete this :model': 'A(z) :model törlése',
+    'Confirmation email missing? Resend it now!': 'Elveszett a megerősítő e-mail? Kérj újat!',
+    'Resend Registration confirmation email': 'Regisztráció e-mail újraküldése',
+    'Resend Confirmation': 'Megerősítő levél újraküldése',
+    'Enter your email address and we will send you a link to email confirmation page.': 'Add meg az e-mail címed, és küldünk neked egy linket a megerősítő oldalra.',
+    'Registration Confirmed!': 'A regisztrációdat véglegesítettük!',
+    'Finalizing registration, please wait.': 'A regisztráció véglegesítése folyamatban van, kérlek várj egy kicsit.',
+    'Now you can log in.': 'Most már bejelentkezhetsz.',
+    'Thank you for registering for our service. An email has been sent to the email address you provided on registration.': 'Köszönjük, hogy regisztráltál a szolgáltatásunkra. Egy e-mailt küldtünk a regisztráció során megadott e-mail címedre.',
 }
 
 export default translations_hu;
-
-
-

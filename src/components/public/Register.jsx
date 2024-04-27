@@ -252,7 +252,7 @@ export default function Register() {
             </div>
             <div className="card-footer text-center py-3">
               <div className="small"><Link to="/login">{__('Have an account? Go to login')}</Link></div>
-              <div className="small"><Link to="/resend-registration">{__('Confirmation email missing? Resend it now')}</Link></div>
+              <div className="small"><Link to="/resend-registration">{__('Confirmation email missing? Resend it now!')}</Link></div>
             </div>
           </div>
         </div>
