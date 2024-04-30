@@ -7,3 +7,16 @@ body {
         border: 1px solid var(--bs-border-color);
     }
 }
+
+.btn-group-xs>.btn, .btn-xs {
+    --bs-btn-padding-y: 0.1rem;
+    --bs-btn-padding-x: 0.25rem;
+    --bs-btn-font-size: 0.8rem;
+    --bs-border-radius-xs: 0.175rem;
+    --bs-btn-border-radius: var(--bs-border-radius-xs);
+    line-height: 1rem;
+}
+
+.nowrap {
+    white-space: nowrap;
+}

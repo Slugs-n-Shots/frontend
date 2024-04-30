@@ -1,13 +1,21 @@
 .toggle-theme {
-    display: contents;
+    /* display: contents; */
+    display: inline-flex;
     white-space: nowrap;
 }
 
-.bg-dark .toggle-theme i {
-    color: #d9d9da!important;
+.toggle-theme div,
+.toggle-theme i {
+    height: 26px;
+    line-height: 26px;
 }
+
+.bg-dark .toggle-theme i {
+    color: #d9d9da !important;
+}
+
 .bg-light .toggle-theme i {
-    color: #212529!important;
+    color: #212529 !important;
 }
 
 .flag-en {

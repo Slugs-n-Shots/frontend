@@ -1,31 +1,38 @@
 .menu {
-    color: white;
+  color: white;
 }
 
-  .notification {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #28a745;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    z-index: 9999;
-    animation: fadeOut 3s ease-in-out;
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 9999;
+  animation: fadeOut 3s ease-in-out;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
   }
 
-  @keyframes fadeOut {
-    0% {
-      opacity: 1;
-    }
-    90% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
+  90% {
+    opacity: 1;
   }
 
-  .counter-input-wrapper {
-    width: 80px;
+  100% {
+    opacity: 0;
   }
+}
+
+.drinks-accordion .counter-input-wrapper {
+  width: 80px;
+}
+
+.drinks-accordion .accordion-button {
+  --bs-accordion-btn-padding-y: .5rem;
+  --bs-accordion-btn-padding-x: .5rem;
+}

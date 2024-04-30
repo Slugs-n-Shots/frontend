@@ -6,7 +6,7 @@ export default function AboutUs(){
     <div className="container mt-5">
       <h2>About Us</h2>
       <p>
-        Project GitHub: <a href="https://github.com/slugs-n-shots/">Slugs'n'Shots</a>
+        Project GitHub: <a href="https://github.com/slugs-n-shots/">{config.appName}</a>
       </p>
 
       {/* You can add additional styling or Bootstrap classes for the footer */}
