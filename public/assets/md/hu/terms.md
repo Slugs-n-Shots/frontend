@@ -20,4 +20,4 @@ Zavarása, megzavarása vagy indokolatlan terhet ró az oldalra vagy az oldalhoz
 Időről időre módosíthatjuk a Felhasználási Feltételeket. A módosított feltételek a weboldalon történő közzététellel azonnal hatályba lépnek. Az oldal további használatával Ön elismeri és elfogadja a módosított feltételeket.  
   
 6. **Kapcsolatfelvétel**  
-Ha kérdése vagy javaslata van a Felhasználási Feltételeinkkel kapcsolatban, ne habozzon kapcsolatba lépni velünk a [Kapcsolati információk] címen.  
+Ha kérdése vagy javaslata van a Felhasználási Feltételeinkkel kapcsolatban, ne habozzon kapcsolatba lépni velünk a [info@slugs-n-shots.hu](info@slugs-n-shots.hu) címen.  
