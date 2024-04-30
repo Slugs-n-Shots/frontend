@@ -29,6 +29,11 @@ export default function Drinks() {
     setActiveKeys(keys);
   }
 
+  const collapseClick = () => {
+    setConfig(KEY_ACCORDION_STATES, null)
+    setActiveKeys([]);
+  }
+
   return menu === null ? (
     <div>{__("Please wait...")}</div>
   ) : (
@@ -36,7 +41,7 @@ export default function Drinks() {
       <div className="row">
         <h2 className="col">{__('Drinks')}</h2>
         <div className="col text-end pe-4 pt-2 small">
-          <i className="fa-solid fa-minimize" onClick={() => {setActiveKeys([]); setConfig(KEY_ACCORDION_STATES, null)}} title={__('Collapse all')}></i>
+          <i className="fa-solid fa-minimize" onClick={() => collapseClick()} title={__('Collapse all')}></i>
         </div>
       </div>
       <Accordion className="drinks-accordion"
@@ -101,7 +106,7 @@ function DrinkSubCategory(props) {
 function DrinkCard(props) {
   const { name, units } = props.drink;
   const { addToCart } = useCart();
-  const { __ } = useTranslation();
+  const { __, formatNumber } = useTranslation();
 
   const handleAddToCart = (unit) => {
     addToCart(props.drink.id, unit.amount, unit.unit_code, 1, "add"); // Mindig csak 1 ital kerül a kosárba
@@ -119,8 +124,8 @@ function DrinkCard(props) {
           </Card.Title>
           {units.map((unit, index) => (<div key={index}>
             <div className="row gx-1">
-              <div className="col-2 nowrap">{unit.amount} {unit.unit_code === null ? __("glass") : unit.unit}</div>
-              <div className="col-3 text-end nowrap">{unit.unit_price} Ft</div>
+              <div className="col-2 nowrap">{formatNumber(unit.amount)} {unit.unit_code === null ? __("glass") : unit.unit}</div>
+              <div className="col-3 text-end nowrap">{formatNumber(unit.unit_price)} Ft</div>
               <div className="col-7 text-end nowrap"><Button size="xs"
                 variant="light"
                 onClick={() => handleAddToCart(unit)}
