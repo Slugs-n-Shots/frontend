@@ -10,24 +10,27 @@ const PublicPageLayout = () => {
   useEffect(() => {
     applyGuestRealm()
 
-    const link = document.createElement('link');
-    link.href = '/assets/css/bootstrap.min.css';
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
+    // const link = document.createElement('link');
+    // link.href = '/assets/css/bootstrap.min.css';
+    // link.type = 'text/css';
+    // link.rel = 'stylesheet';
 
-    document.head.appendChild(link);
+    // document.head.appendChild(link);
 
     return () => {
-      document.head.removeChild(link);
+      // document.head.removeChild(link);
     };
   });
 
 
   return (
-    <CartProvider>
-      <TopNav />
-      <ContentArea />
-    </CartProvider>
+    <>
+      <link rel="stylesheet" type="text/css" href="/assets/css/pub.css" />
+      <CartProvider>
+        <TopNav />
+        <ContentArea />
+      </CartProvider>
+    </>
   );
 };
 

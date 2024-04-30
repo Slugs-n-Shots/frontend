@@ -260,7 +260,7 @@ const DataTable = (props) => {
 
 function Table(props) {
   return (
-    <table className="table data-table">
+    <table className="table data-table table-sm">
       <TableHead />
       <TableBody />
     </table>

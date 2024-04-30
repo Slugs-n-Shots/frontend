@@ -1,0 +1,9 @@
+@import url(bootstrap.min.css);
+
+body {
+    @media screen and (min-width: 960px) {
+        max-width: 90%;
+        margin: 1rem auto;
+        border: 1px solid var(--bs-border-color);
+    }
+}

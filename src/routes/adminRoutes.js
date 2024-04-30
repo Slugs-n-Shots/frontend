@@ -18,17 +18,17 @@ const adminRoutes = [
     {
         "path": "/admin/register",
         "component": "admin/EmployeeRegister",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/drinks",
         "component": "admin/Drinks",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/guests",
         "component": "admin/Guests",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/login",
@@ -53,37 +53,47 @@ const adminRoutes = [
     {
         "path": "/admin/profile",
         "component": "common/Profile",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/masters/drinks",
         "component": "admin/masters/DrinkMaster",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/masters/drink-categories",
         "component": "admin/masters/DrinkCategoryMaster",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/masters/orders",
         "component": "admin/masters/OrderMaster",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/masters/receipts",
         "component": "admin/masters/ReceiptMaster",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/masters/employees",
         "component": "admin/masters/EmployeeMaster",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
     },
     {
         "path": "/admin/masters/guests",
         "component": "admin/masters/GuestMaster",
-        "roles": ["admin", 'backoffice']
+        "roles": ["admin", "backoffice"]
+    },
+    {
+        "path": "/admin/terms",
+        "component": "common/Terms",
+        "roles": ["auth", "unauth"]
+    },
+    {
+        "path": "/admin/privacy",
+        "component": "common/Privacy",
+        "roles": ["auth", "unauth"]
     },
 ]
 

@@ -102,6 +102,10 @@ const translations_hu = {
     'Finalizing registration, please wait.': 'A regisztráció véglegesítése folyamatban van, kérlek várj egy kicsit.',
     'Now you can log in.': 'Most már bejelentkezhetsz.',
     'Thank you for registering for our service. An email has been sent to the email address you provided on registration.': 'Köszönjük, hogy regisztráltál a szolgáltatásunkra. Egy e-mailt küldtünk a regisztráció során megadott e-mail címedre.',
+    'Invalid request': 'Érvénytelen kérés',
+    'Invalid user or token': 'Érvénytelen felhasználó vagy token',
+    'glass': 'pohár',
+    'bottle': 'üveg',
 }
 
 export default translations_hu;

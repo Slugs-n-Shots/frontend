@@ -89,9 +89,14 @@ const publicRoutes = [
         "roles": ["auth","unauth"]
     },
     {
-        "path": "/terms-of-use",
-        "component": "public/Terms",
-        "roles": ["auth","unauth"]
+        "path": "/terms",
+        "component": "common/Terms",
+        "roles": ["auth", "unauth"]
+    },
+    {
+        "path": "/privacy",
+        "component": "common/Privacy",
+        "roles": ["auth", "unauth"]
     },
 ]
 
