@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import config from '../models/config.js';
+import config from "../models/config";
 
 const ConfigContext = createContext();
 const CONFIG_KEYS = {

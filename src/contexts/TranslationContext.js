@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from "react";
-import { useConfig } from "./ConfigContext.js";
-// import translations from "lang/hu.js";
-import translations_hu from "lang/hu.js";
+import { useConfig } from "./ConfigContext";
+import translations_hu from "lang/hu";
 
 const CONFIG_KEY_LANGUAGE = "language"
 const TranslationContext = createContext();

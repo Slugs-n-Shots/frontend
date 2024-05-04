@@ -1,9 +1,8 @@
 import { createContext, useContext, useState } from "react";
 import { useConfig } from "./ConfigContext";
 import { useApi } from "./ApiContext";
-import { useMessages } from "./MessagesContext.js";
+import { useMessages } from "./MessagesContext";
 import { useTranslation } from "./TranslationContext";
-import { useUser } from "./UserContext";
 
 const CartContext = createContext();
 
@@ -13,48 +12,17 @@ export const CartProvider = ({ children }) => {
   const [menu, setMenu] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [drinkList, setDrinkList] = useState([]);
-  const { get } = useApi();
+  const { get, post } = useApi();
   const { realm } = useConfig();
   const { addMessage } = useMessages();
   const { __ } = useTranslation();
-  const { user } = useUser();
-  const { post } = useApi();
 
   const [cartItems, setCartItems] = useState(() => {
     // LOAD
     const jsonItems = localStorage.getItem(CART_KEY);
     const items = jsonItems !== null ? JSON.parse(jsonItems) : {};
-    // console.log('Cart loaded from localStorage', items)
     return items;
   });
-
-  const postCartItem = async (userId, cartData) => {
-    console.log(cartData, userId);
-    try {
-      const response = await post(`/users/${userId}/cart`, cartData);
-      console.log("CartItem posted successfully:", response.data);
-      clearCartLocally();
-      addMessage("success", "Cart items posted successfully!");
-    } catch (error) {
-      console.error("Error posting cart item:", error);
-      addMessage("danger", "Failed to post cart items.");
-    }
-  };
-
-  const clearCartLocally = () => {
-    localStorage.removeItem(CART_KEY);
-    setCartItems({});
-  };
-
-  const handleOrder = () => {
-    if (!user) {
-      addMessage("warning", "Please log in to place an order.");
-    } else {
-      const userId = user.id;
-      const cartData = { cartItems };
-      postCartItem(userId, cartData);
-    }
-  };
 
   const loadDrinks = async () => {
     if (!loaded && realm) {
@@ -73,6 +41,15 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const makeOrder = async () => {
+    try {
+      const cart = Object.keys(cartItems).map((key, idx) => { return { ...(parseKey(key)), quantity: cartItems[key] } });
+      post('/orders', { cart })
+    } catch (error) {
+      console.error('makeOrder', error)
+    }
+  }
+
   const updateDrinkList = (drinks) => {
     const drinkList = {};
     Object.keys(drinks ?? {}).forEach((key) => {
@@ -81,7 +58,7 @@ export const CartProvider = ({ children }) => {
       Object.keys(outCat.drinks ?? {}).forEach((key) => {
         // főkategóris italok
         const drink = outCat.drinks[key];
-        if (drink.unit === null) {
+        if (drink.unit_code === null) {
           drink.unit = __("glass");
         }
         drinkList[drink.id] = drink;
@@ -92,7 +69,7 @@ export const CartProvider = ({ children }) => {
         Object.keys(inCat.drinks ?? {}).forEach((key) => {
           // főkategóris italok
           const drink = inCat.drinks[key];
-          if (drink.unit === null) {
+          if (drink.unit_code === null) {
             drink.unit = __("glass");
           }
           drinkList[drink.id] = drink;
@@ -112,20 +89,19 @@ export const CartProvider = ({ children }) => {
     return drinkList;
   };
 
-  const removeFromCart = (drink_id, amount, unit) => {
-    amount = Number(amount);
-    const key = `${drink_id}|${amount}|${unit ?? ""}`;
+  const removeFromCart = (drink_id, quantity, unit) => {
+    quantity = Number(quantity);
+    const key = `${drink_id}|${quantity}|${unit ?? ""}`;
     const newCartItems = { ...cartItems };
     delete newCartItems[key];
     setCartItems(newCartItems);
-    // console.log("removeFromCart:", key, "removed");
     localStorage.setItem(CART_KEY, JSON.stringify(newCartItems));
   };
 
-  const addToCart = (drink_id, amount, unit, quantityToAdd, mode = "add") => {
-    amount = Number(amount);
-    console.log("addToCart", { drink_id, amount, unit, quantityToAdd, mode });
-    const key = `${drink_id}|${amount}|${unit ?? ""}`;
+  const addToCart = (drink_id, quantity, unit, quantityToAdd, mode = "add") => {
+    quantity = Number(quantity);
+    console.log("addToCart", { drink_id, quantity, unit, quantityToAdd, mode });
+    const key = `${drink_id}|${quantity}|${unit ?? ""}`;
     const currentQuantity = cartItems[key] || 0;
     let newQuantity = quantityToAdd;
     if (mode === "add") {
@@ -148,28 +124,29 @@ export const CartProvider = ({ children }) => {
 
     const drink = drinkList[drink_id];
     if (drink) {
-      const parsedAmount = parseFloat(amount);
+      const parsedQuantity = parseFloat(quantity);
       const selectedUnit = drink.units.find(
-        (u) => parseFloat(u.amount) === parsedAmount && u.unit === unit
+        (u) => parseFloat(u.quantity) === parsedQuantity && u.unit_code === unit
       );
-     
       if (selectedUnit) {
         if (mode === "add" && quantityToAdd > 0) {
-          addMessage("success", __("Added :drink to cart"), { drink: drink.name });
+          addMessage("success", __("Added :drink to cart", { drink: drink.name }));
         }
         if (mode === "add" && quantityToAdd < 0) {
-          addMessage("success", __("Removed :drink from cart"), {
-            drink: drink.name,
-          });
+          addMessage("success", __("Removed :drink from cart", { drink: drink.name }));
         }
       } else {
         addMessage(
           "warning",
-          `Selected unit not found for drink_id: ${drink_id}, amount: ${amount}, unit: ${unit}`
+          __(`Selected unit not found for drink_id: :drink_id, quantity: :quantity, unit: :unit`, {
+            drink_id,
+            quantity,
+            unit,
+          })
         );
       }
     } else {
-      addMessage("warning", __(`Drink not found for drink_id: ${drink_id}`));
+      addMessage("warning", __('Drink not found'));
     }
   };
 
@@ -177,24 +154,24 @@ export const CartProvider = ({ children }) => {
     const drinkList = getDrinkList();
 
     const ret = Object.entries(cartItems)
-      .map(([key, quantity]) => {
-        const { drink_id, amount, unit } = parseKey(key);
-        const drink = drinkList[drink_id];
+      .map(([key, orderedQuantity]) => {
+        const { drinkId, quantity, unit } = parseKey(key);
+        const drink = drinkList[drinkId];
         if (drink) {
           const selectedUnit = drink.units.find(
-            (u) => parseFloat(u.amount) === amount && u.unit === unit
+            (u) => parseFloat(u.quantity) === quantity && u.unit_code === unit
           );
           if (selectedUnit) {
             const unitPrice = Number(selectedUnit.unit_price);
             return {
-              id: drink_id,
-              name: drink.name || `Drink #${drink_id}`,
-              amount,
-              unit: unit,
+              id: drinkId,
+              name: drink.name || `Drink #${drinkId}`,
+              quantity,
+              unit,
               unitPrice,
-              quantity: Number(quantity),
+              orderedQuantity: Number(orderedQuantity),
               key,
-              total: quantity * unitPrice,
+              total: orderedQuantity * unitPrice,
             };
           } else {
             return null;
@@ -211,13 +188,13 @@ export const CartProvider = ({ children }) => {
   const calculateCartTotal = () => {
     let grandTotal = 0;
     Object.entries(cartItems).forEach(([key, value]) => {
-      const { drink_id, amount, unit } = parseKey(key);
+      const { drink_id, quantity, unit } = parseKey(key);
       const drink = drinkList[drink_id];
       // console.log(drink, key);
       let unitPrice = NaN;
       if (drink) {
         const selectedUnit = drink.units.find(
-          (u) => parseFloat(u.amount) === amount && u.unit === unit
+          (u) => parseFloat(u.quantity) === quantity && u.unit === unit
         );
         if (selectedUnit) {
           unitPrice = selectedUnit.unit_price;
@@ -235,13 +212,13 @@ export const CartProvider = ({ children }) => {
     <CartContext.Provider
       value={{
         getMenu,
-        handleOrder,
         cartItems,
         detailedCartItems,
         calculateCartTotal,
         addToCart,
         removeFromCart,
         getDrinkList,
+        makeOrder,
       }}
     >
       {children}
@@ -250,11 +227,11 @@ export const CartProvider = ({ children }) => {
 };
 
 const parseKey = (key) => {
-  const [keyId, keyAmount, keyUnit] = key.split("|");
-  const drink_id = Number(keyId);
-  const amount = Number(keyAmount);
+  const [keyId, keyQuantity, keyUnit] = key.split("|");
+  const drinkId = Number(keyId);
+  const quantity = Number(keyQuantity);
   const unit = keyUnit === "" ? null : keyUnit;
-  return { drink_id, amount, unit };
+  return { drinkId, quantity, unit };
 };
 
 export const useCart = () => useContext(CartContext);

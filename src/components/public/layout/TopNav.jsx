@@ -1,8 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 import ToggleTheme from "components/common/ToggleTheme.jsx";
-import { useTranslation } from "contexts/TranslationContext.js";
-import { useUser } from "contexts/UserContext.js";
-// import { useConfig } from "contexts/ConfigContext.js";
+import { useTranslation } from "contexts/TranslationContext";
+import { useUser } from "contexts/UserContext";
+// import { useConfig } from "contexts/ConfigContext";
 import config from "models/config";
 
 const TopNav = () => {
@@ -30,22 +30,22 @@ const TopNav = () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                Menu
+                {__('Menu')}
               </a>
               <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
                   <Link className="dropdown-item" to="/drinks">
-                    Drinks
+                    {__('Drinks')}
                   </Link>
                 </li>
                 <li>
                   <Link className="dropdown-item" to="/shopping-cart">
-                    Shopping Cart
+                    {__('Shopping Cart')}
                   </Link>
                 </li>
                 <li>
                   <Link className="dropdown-item" to="/about-us">
-                    About Us
+                    {__('About Us')}
                   </Link>
                 </li>
               </ul>

@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext } from 'react';
-import { useConfig } from './ConfigContext.js';
+import { useConfig } from "contexts/ConfigContext";
 
 const CONFIG_KEY_USER = 'user';
 

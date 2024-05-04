@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import "./Register.2.css";
 import { useTranslation } from "contexts/TranslationContext";
 import { Button, Form, Row } from "react-bootstrap";
-import { useApi } from "contexts/ApiContext.js";
-import { useMessages } from "contexts/MessagesContext.js";
-import { validatePassword } from "models/MiscHelper.js";
-//import { useConfig } from "contexts/ConfigContext.js";
+import { useApi } from "contexts/ApiContext";
+import { useMessages } from "contexts/MessagesContext";
+import { validatePassword } from "models/MiscHelper";
+//import { useConfig } from "contexts/ConfigContext";
 
 
 const ResetPassword = () => {

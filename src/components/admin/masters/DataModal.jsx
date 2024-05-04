@@ -1,6 +1,6 @@
 import { useData } from "components/admin/masters/DataTable";
-import { useTranslation } from "contexts/TranslationContext.js";
-import { capitalize } from "models/MiscHelper.js";
+import { useTranslation } from "contexts/TranslationContext";
+import { capitalize } from "models/MiscHelper";
 import { useEffect, useState } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 

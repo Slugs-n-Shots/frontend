@@ -3,15 +3,15 @@ import { useUser } from "contexts/UserContext";
 import NoPage from "./NoPage.jsx";
 import { useMessages } from "contexts/MessagesContext";
 import { useApi } from "contexts/ApiContext";
+import { useTranslation } from "contexts/TranslationContext";
 
 const Profile = () => {
   const { user } = useUser();
   const { addMessage } = useMessages();
-  const { get, deleteX, post} = useApi(); // Renamed delete to deleteApi because 'delete' is a reserved keyword
+  const { get, deleteX } = useApi(); // Renamed delete to deleteApi because 'delete' is a reserved keyword
+  const { __ } = useTranslation();
   const [displayUser, setDisplayUser] = useState(user);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  //edit mód state, jelszónál kérje régit, middlenem nem minden mas kell 
 
   const refresh = () => {
     get("me")
@@ -24,6 +24,10 @@ const Profile = () => {
         addMessage("danger", error.response.data.error);
       });
   };
+
+  if (false) { // csak hogy a fordító ne vinnyogjon, hogy a refresh nincs használatban
+    refresh();
+  }
 
   const handleDeleteConfirmation = () => {
     deleteX("me")
@@ -50,18 +54,20 @@ const Profile = () => {
           <h2>{displayUser.name}</h2>
           <div className="row">
             <div className="col-md-6">
-              <UserInfo label="Name" value={`${displayUser.first_name}  ${displayUser.middle_name ?? ""} ${displayUser.last_name}`} />
-              <UserInfo label="Email" value={displayUser.email} />
-              <UserInfo label="Table" value={displayUser.table} />
-              <UserInfo label="Adress" value={displayUser.adress} />
-              <UserInfo label="Phone number" value={displayUser.phone} />
+              <UserInfo label={__('First Name')} value={displayUser.first_name}  />
+              <UserInfo label={__('Middle Name')} value={displayUser.middle_name} />
+              <UserInfo label={__('Last Name')} value={displayUser.last_name} />
+              <UserInfo label={__('Email')} value={displayUser.email} />
+              <UserInfo label={__('Address')} value={displayUser.adress} />
+              <UserInfo label={__('Phone number')} value={displayUser.phone} />
+              <UserInfo label={__('Table')} value={displayUser.table} />
             </div>
           </div>
           <button className="btn btn-danger mt-3" onClick={() => setShowDeleteModal(true)}>
-            Delete
+            {__('Delete my account')}
           </button>
         </div>
-      )} 
+      )}
 
       {/* Delete confirmation modal */}
       {showDeleteModal && (
@@ -69,18 +75,17 @@ const Profile = () => {
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Confirm Deletion</h5>
-                
+                <h5 className="modal-title">{__('Confirm Deletion')}</h5>
               </div>
               <div className="modal-body">
-                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <p>{__('Are you sure you want to delete your account? This action cannot be undone.')}</p>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowDeleteModal(false)}>
-                  Cancel
+                  {__('Cancel')}
                 </button>
                 <button type="button" className="btn btn-danger" onClick={handleDeleteConfirmation}>
-                  Delete
+                  {__('Delete')}
                 </button>
               </div>
             </div>

@@ -1,7 +1,7 @@
-import { useApi } from "contexts/ApiContext.js";
-import { useConfig } from "contexts/ConfigContext.js";
-import { useMessages } from "contexts/MessagesContext.js";
-import { useTranslation } from "contexts/TranslationContext.js";
+import { useApi } from "contexts/ApiContext";
+import { useConfig } from "contexts/ConfigContext";
+import { useMessages } from "contexts/MessagesContext";
+import { useTranslation } from "contexts/TranslationContext";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 

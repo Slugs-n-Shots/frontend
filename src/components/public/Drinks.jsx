@@ -6,7 +6,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import { useCart } from "contexts/CartContext";
 import "./drinks.css";
 import { useState } from "react";
-import { useConfig } from "contexts/ConfigContext.js";
+import { useConfig } from "contexts/ConfigContext";
 
 const KEY_ACCORDION_STATES = 'drAcc';
 export default function Drinks() {
@@ -109,7 +109,7 @@ function DrinkCard(props) {
   const { __, formatNumber } = useTranslation();
 
   const handleAddToCart = (unit) => {
-    addToCart(props.drink.id, unit.amount, unit.unit_code, 1, "add"); // Mindig csak 1 ital kerül a kosárba
+    addToCart(props.drink.id, unit.quantity, unit.unit_code, 1, "add"); // Mindig csak 1 ital kerül a kosárba
   };
 
   return (
@@ -124,7 +124,7 @@ function DrinkCard(props) {
           </Card.Title>
           {units.map((unit, index) => (<div key={index}>
             <div className="row gx-1">
-              <div className="col-2 nowrap">{formatNumber(unit.amount)} {unit.unit_code === null ? __("glass") : unit.unit}</div>
+              <div className="col-2 nowrap">{formatNumber(unit.quantity)} {unit.unit_code === null ? __("glass") : unit.unit}</div>
               <div className="col-3 text-end nowrap">{formatNumber(unit.unit_price)} Ft</div>
               <div className="col-7 text-end nowrap"><Button size="xs"
                 variant="light"

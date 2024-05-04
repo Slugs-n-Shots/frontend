@@ -3,9 +3,9 @@ import "./Register.2.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "contexts/TranslationContext";
 import { Button, Form, Row } from "react-bootstrap";
-import { useApi } from "contexts/ApiContext.js";
-import { useMessages } from "contexts/MessagesContext.js";
-import { validatePassword, validateEmail } from "models/MiscHelper.js";
+import { useApi } from "contexts/ApiContext";
+import { useMessages } from "contexts/MessagesContext";
+import { validatePassword, validateEmail } from "models/MiscHelper";
 
 export default function Register() {
   const navigate = useNavigate();

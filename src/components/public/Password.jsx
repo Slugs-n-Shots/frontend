@@ -3,10 +3,10 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "contexts/TranslationContext";
 import './register.css';
-import { useApi } from 'contexts/ApiContext.js';
-import { useMessages } from 'contexts/MessagesContext.js';
-import { validateEmail } from "models/MiscHelper.js";
-import { useConfig } from 'contexts/ConfigContext.js';
+import { useApi } from "contexts/ApiContext";
+import { useMessages } from "contexts/MessagesContext";
+import { validateEmail } from "models/MiscHelper";
+import { useConfig } from "contexts/ConfigContext";
 
 
 

@@ -1,4 +1,5 @@
 const translations_hu = {
+    'Menu': 'Menü',
     'Context API Sample app with user, translation, and theme handling': 'Context API Mintaalkalmazás felhasználóval, fordítással és témakezeléssel',
     'Welcome :name!': 'Üdvözlünk, :name!',
     'Please log in.': 'Kérlek, jelentkezz be.',
@@ -29,7 +30,7 @@ const translations_hu = {
     'Have an account? Go to login': 'Van már fiókod? Menj a bejelentkezéshez',
     'Email address': 'Email cím',
     'Forgot Password?': 'Elfelejtetted a jelszavad?',
-    'Need an account? Sign up!': 'Szükséged van egy fiókra? Regisztrálj!',
+    'Need an account? Sign up!': 'Szükséged van fiókra? Regisztrálj!',
     'Password Recovery': 'Jelszó helyreállítás',
     'Enter your email address and we will send you a link to reset your password.': 'Add meg az email címedet, és küldünk egy linket a jelszavad visszaállításához.',
     'Enter your first name': 'Add meg a keresztneved',
@@ -106,6 +107,19 @@ const translations_hu = {
     'Invalid user or token': 'Érvénytelen felhasználó vagy token',
     'glass': 'pohár',
     'bottle': 'üveg',
+    'Add many': 'Többet',
+    'Unit Price': 'Egys. ár',
+    'Unit': 'ME',
+    'Qty': 'Menny',
+    'Total': 'Összesen',
+    'Remove': 'Töröl',
+    'Shopping Cart': 'Kosár',
+    'About Us': 'Rólunk',
+    'Name': 'Név',
+    'Table': 'Asztal',
+    'Address': 'Cím',
+    'Phone number': 'Telefonszám',
+    'Delete my account': 'Felhasználói fiók törlése'
 }
 
 export default translations_hu;

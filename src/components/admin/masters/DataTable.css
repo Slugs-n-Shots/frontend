@@ -9,11 +9,11 @@
 }
 
 .data-table th.sort-asc::after {
-    content: '\25BC';
+    content: '\25B2';
 }
 
 .data-table th.sort-desc::after {
-    content: '\25B2';
+    content: '\25BC';
 }
 
 .data-table td.field-number {
