@@ -46,7 +46,7 @@ const TimedAlert = (props) => {
   const alertProps = { ...props, show }
 
   return (
-    <Alert {...alertProps} >{JSON.stringify(props)}</Alert>
+    <Alert {...alertProps} >{props.children}</Alert>
   );
 }
 
