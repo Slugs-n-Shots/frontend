@@ -39,7 +39,7 @@ const TimedAlert = (props) => {
   const [show, setShow] = useState(props.show);
 
   useEffect(() => {
-    if (props?.timeOut) {
+    if (props?.timeOut !== undefined) {
       window.setTimeout(() => { setShow(false); }, props?.timeOut)
     }
   })
