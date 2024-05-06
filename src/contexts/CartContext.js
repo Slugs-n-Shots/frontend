@@ -123,7 +123,6 @@ export const CartProvider = ({ children }) => {
 
     setCartItems(cartItemsCopy);
     setConfig(CART_KEY, cartItemsCopy);
-    // localStorage.setItem(CART_KEY, JSON.stringify(cartItemsCopy));
 
     const drink = drinkList[drink_id];
     if (drink) {
@@ -133,10 +132,10 @@ export const CartProvider = ({ children }) => {
       );
       if (selectedUnit) {
         if (mode === "add" && quantityToAdd > 0) {
-          addMessage("success", "Added :drink to cart", { drink: drink.name }, {timeOut: 2000});
+          addMessage("success", "Added :drink to cart", { drink: drink.name }, { timeOut: 2000 });
         }
         if (mode === "add" && quantityToAdd < 0) {
-          addMessage("success", "Removed :drink from cart", { drink: drink.name }, {timeOut: 2000});
+          addMessage("success", "Removed :drink from cart", { drink: drink.name }, { timeOut: 2000 });
         }
       } else {
         addMessage(
