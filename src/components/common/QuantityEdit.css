@@ -1,0 +1,8 @@
+.quantity-edit input{
+    text-align: right;
+    padding-right: .7rem;
+}
+
+.quantity-edit {
+    width: 200px;
+}

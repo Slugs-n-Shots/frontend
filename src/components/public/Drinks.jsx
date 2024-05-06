@@ -4,7 +4,6 @@ import "./drinks.css";
 import { Accordion, Button, Card } from "react-bootstrap";
 import { useTranslation } from "contexts/TranslationContext";
 import { useCart } from "contexts/CartContext";
-import "./drinks.css";
 import { useState } from "react";
 import { useConfig } from "contexts/ConfigContext";
 

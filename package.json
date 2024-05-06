@@ -22,7 +22,6 @@
     "jquery": "^3.7.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
-    "react-bootstrap-counter": "^1.0.1",
     "react-data-table-component": "^7.6.2",
     "react-dom": "^18.2.0",
     "react-fontawesome": "^1.7.1",

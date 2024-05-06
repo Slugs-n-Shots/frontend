@@ -1,8 +1,8 @@
 import { Table, Button } from "react-bootstrap";
 import { useCart } from "contexts/CartContext";
-import CounterInput from "react-bootstrap-counter";
 import "./drinks.css";
 import { useTranslation } from "contexts/TranslationContext";
+import QuantityEdit from "components/common/QuantityEdit.jsx";
 
 export default function ShoppingCart() {
   const { detailedCartItems, removeFromCart, addToCart, calculateCartTotal, makeOrder } = useCart();
@@ -36,15 +36,14 @@ export default function ShoppingCart() {
                     {formatNumber(item.quantity)} {item.unit ?? __('glass')}
                   </td>
                   <td>
-                    <div className="counter-input-wrapper">
-                      <CounterInput
-                        max={99}
-                        value={item.orderedQuantity}
-                        onChange={(value) =>
-                          addToCart(item.id, item.quantity, item.unit, value, "set")
-                        }
-                      />
-                    </div>
+                    <QuantityEdit style={{ maxWidth: 200 }}
+                      min={1}
+                      max={25}
+                      value={item.orderedQuantity}
+                      onChange={(value) =>
+                        addToCart(item.id, item.quantity, item.unit, value, "set")
+                      }
+                    />
                   </td>
                   <td className="text-end">{item.total} Ft</td>
                   <td className="text-center">
