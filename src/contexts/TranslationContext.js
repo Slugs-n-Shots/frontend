@@ -29,9 +29,14 @@ export const TranslationProvider = ({ children }) => {
 
     function formatDate(date, lang = language) {
         const d = new Date(date);
-        console.log(d)
         const locale = languages[lang]?.locale ?? languages[defaultLanguage].locale
         return d.toLocaleDateString(locale);
+    }
+
+    function formatDateTime(date, lang = language) {
+        const d = new Date(date);
+        const locale = languages[lang]?.locale ?? languages[defaultLanguage].locale
+        return d.toLocaleDateString(locale) + ' ' + d.toLocaleTimeString(locale);
     }
 
     function formatNumber(num, lang = language) {
@@ -62,7 +67,15 @@ export const TranslationProvider = ({ children }) => {
     }
 
     return (
-        <TranslationContext.Provider value={{ language, languages, __, changeLanguage, formatDate, formatNumber }}>
+        <TranslationContext.Provider value={{
+            language,
+            languages,
+            __,
+            changeLanguage,
+            formatDate,
+            formatDateTime,
+            formatNumber
+        }}>
             {children}
         </TranslationContext.Provider>
     );

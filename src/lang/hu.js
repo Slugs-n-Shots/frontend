@@ -121,6 +121,11 @@ const translations_hu = {
     'Phone number': 'Telefonszám',
     'Delete my account': 'Felhasználói fiók törlése',
     'Return to Main Page': 'Vissza a kezdőoldalra',
+    'Details': 'Részletek',
+    'Status': 'Állapot',
+    'Ordered at': 'Megrendelve',
+    'Order it again': 'Újra megrendelem',
+    'Number of items': 'Tételek száma',
 }
 
 export default translations_hu;

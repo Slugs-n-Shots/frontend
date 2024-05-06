@@ -36,7 +36,6 @@ export const CartProvider = ({ children }) => {
         setDrinkList(drinkList);
         setLoaded(true);
       } catch (error) {
-        // error.response.status == 401
         addMessage("danger", error.statusText);
         console.warn(error);
       }
@@ -46,7 +45,12 @@ export const CartProvider = ({ children }) => {
   const makeOrder = async () => {
     try {
       const cart = Object.keys(cartItems).map((key, idx) => { return { ...(parseKey(key)), ordered_quantity: cartItems[key] } });
+      if (post === get) { }
       post('/orders', { cart })
+      console.log(cart);
+      // empty cart
+      setConfig(CART_KEY, null);
+      setCartItems([]);
     } catch (error) {
       console.warn('makeOrder', error)
     }
@@ -101,10 +105,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (drink_id, quantity, unit, quantityToAdd, mode = "add") => {
+    const cartItemsCopy = typeof cartItems === 'object' && cartItems !== null ? { ...cartItems } : {};
     quantity = Number(quantity);
     console.log("addToCart", { drink_id, quantity, unit, quantityToAdd, mode });
     const key = `${drink_id}|${quantity}|${unit ?? ""}`;
-    const currentQuantity = cartItems[key] || 0;
+    const currentQuantity = cartItemsCopy[key] || 0;
     let newQuantity = quantityToAdd;
     if (mode === "add") {
       newQuantity += currentQuantity;
@@ -114,7 +119,6 @@ export const CartProvider = ({ children }) => {
       newQuantity = 0;
     }
 
-    const cartItemsCopy = { ...cartItems };
     cartItemsCopy[key] = newQuantity;
 
     if (cartItemsCopy[key] <= 0) {
@@ -140,15 +144,11 @@ export const CartProvider = ({ children }) => {
       } else {
         addMessage(
           "warning",
-          __(`Selected unit not found for drink_id: :drink_id, quantity: :quantity, unit: :unit`, {
-            drink_id,
-            quantity,
-            unit,
-          })
+          `Selected unit not found for drink_id: :drink_id, quantity: :quantity, unit: :unit`, { drink_id, quantity, unit }
         );
       }
     } else {
-      addMessage("warning", __('Drink not found'));
+      addMessage("warning", 'Drink not found');
     }
   };
 
@@ -214,7 +214,8 @@ export const CartProvider = ({ children }) => {
   };
 
   const drinkCount = () => {
-    return Object.entries(cartItems).reduce((total, [k, v]) => total + v, 0)
+    console.log('drinkCount', cartItems, (typeof cartItems === 'object' && cartItems !== null))
+
     return (typeof cartItems === 'object' && cartItems !== null) ? Object.entries(cartItems).reduce((total, [k, v]) => total + v, 0) : 0;
   }
 

@@ -1,0 +1,4 @@
+.order-details-collapsible,
+.order-details-collapse-button {
+    transition: height 5s ease-in-out;
+}

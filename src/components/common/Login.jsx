@@ -57,7 +57,7 @@ const Login = () => {
             </Card.Header>
             <Card.Body>
               <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="email">abc
+                <Form.Group className="mb-3" controlId="email">
                   <Form.Control
                     type="email"
                     value={email}

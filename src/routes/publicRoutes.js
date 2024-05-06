@@ -84,6 +84,11 @@ const publicRoutes = [
         "roles": ["auth"]
     },
     {
+        "path": "/my-orders",
+        "component": "public/Orders",
+        "roles": ["auth"]
+    },
+    {
         "path": "/about-us",
         "component": "public/AboutUs",
         "roles": ["auth","unauth"]
