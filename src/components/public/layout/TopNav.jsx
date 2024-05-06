@@ -5,15 +5,17 @@ import { useUser } from "contexts/UserContext";
 // import { useConfig } from "contexts/ConfigContext";
 import config from "models/config";
 import { useCart } from "contexts/CartContext.js";
+import { useTheme } from "contexts/ThemeContext.js";
 
 const TopNav = () => {
   const { __, language, languages, changeLanguage } = useTranslation();
   const { user, logout } = useUser();
   const { drinkCount } = useCart();
+  const { theme } = useTheme();
 
   const count = drinkCount();
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg {theme === 'dark'? 'navbar-dark bg-dark': ''}">
       <div className="container-fluid">
         <Link data-ek="brand" className="navbar-brand ps-3" to="/">
           {config.appName}
@@ -34,7 +36,7 @@ const TopNav = () => {
                 {count ? <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   {count}
                   <span className="visually-hidden">{__('Drinks in the cart')}</span>
-                </span>: ""}
+                </span> : ""}
               </Link>
             </li>
             {/* <li className="nav-item">

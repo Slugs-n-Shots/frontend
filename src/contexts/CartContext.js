@@ -154,37 +154,40 @@ export const CartProvider = ({ children }) => {
 
   const detailedCartItems = () => {
     const drinkList = getDrinkList();
-
-    const ret = Object.entries(cartItems)
-      .map(([key, orderedQuantity]) => {
-        const { drink_id, quantity, unit } = parseKey(key);
-        const drink = drinkList[drink_id];
-        if (drink) {
-          const selectedUnit = drink.units.find(
-            (u) => parseFloat(u.quantity) === quantity && u.unit_code === unit
-          );
-          if (selectedUnit) {
-            const unitPrice = Number(selectedUnit.unit_price);
-            return {
-              id: drink_id,
-              name: drink.name || `Drink #${drink_id}`,
-              quantity,
-              unit,
-              unitPrice,
-              orderedQuantity: Number(orderedQuantity),
-              key,
-              total: orderedQuantity * unitPrice,
-            };
+    if (typeof cartItems === 'object' && cartItems !== null) {
+      const ret = Object.entries(cartItems)
+        .map(([key, orderedQuantity]) => {
+          const { drink_id, quantity, unit } = parseKey(key);
+          const drink = drinkList[drink_id];
+          if (drink) {
+            const selectedUnit = drink.units.find(
+              (u) => parseFloat(u.quantity) === quantity && u.unit_code === unit
+            );
+            if (selectedUnit) {
+              const unitPrice = Number(selectedUnit.unit_price);
+              return {
+                id: drink_id,
+                name: drink.name || `Drink #${drink_id}`,
+                quantity,
+                unit,
+                unitPrice,
+                orderedQuantity: Number(orderedQuantity),
+                key,
+                total: orderedQuantity * unitPrice,
+              };
+            } else {
+              return null;
+            }
           } else {
             return null;
           }
-        } else {
-          return null;
-        }
-      })
-      .filter((item) => item !== null);
-    console.log("details", ret);
-    return ret;
+        })
+        .filter((item) => item !== null);
+      console.log("details", ret);
+      return ret;
+    }
+    // ha nincs benne tétel üres tömb, ha még nincs inicializálva a bevásárlókocsi: undefined.
+    return (typeof drinkList === 'object' && drinkList !== null) ? [] : undefined;
   };
 
   const calculateCartTotal = () => {
@@ -212,6 +215,7 @@ export const CartProvider = ({ children }) => {
 
   const drinkCount = () => {
     return Object.entries(cartItems).reduce((total, [k, v]) => total + v, 0)
+    return (typeof cartItems === 'object' && cartItems !== null) ? Object.entries(cartItems).reduce((total, [k, v]) => total + v, 0) : 0;
   }
 
   return (

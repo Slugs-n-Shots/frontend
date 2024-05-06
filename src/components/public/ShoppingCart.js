@@ -11,8 +11,8 @@ export default function ShoppingCart() {
   console.log('cartItems', cartItems)
   return (
     <div>
-      <h1>Shopping Cart</h1>
-      {cartItems.length ? (
+      <h1>{__('Shopping Cart')}</h1>
+      {cartItems?.length ? (
         <>
           <Table striped bordered hover>
             <thead>
@@ -78,7 +78,9 @@ export default function ShoppingCart() {
           </Table>
         </>
 
-      ) : (<div>{__('Your cart is empty, why don\'t you order something?')}</div>)}
+      ) : (<div className="text-center">{(cartItems === undefined ?
+        __('Your cart is loading, please wait..') :
+        __('Your cart is empty, why don\'t you order something?'))}</div>)}
     </div>
   );
 }
