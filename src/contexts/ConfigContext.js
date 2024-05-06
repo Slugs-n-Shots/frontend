@@ -16,7 +16,6 @@ export const ConfigProvider = ({ children }) => {
     const [realm, setRealm] = useState(null);
 
     const configKey = CONFIG_KEYS[realm] ?? '';
-    // console.log('configKey', configKey)
 
     const [items, setItems] = useState(() => {
         // LOAD

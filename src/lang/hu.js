@@ -119,7 +119,8 @@ const translations_hu = {
     'Table': 'Asztal',
     'Address': 'Cím',
     'Phone number': 'Telefonszám',
-    'Delete my account': 'Felhasználói fiók törlése'
+    'Delete my account': 'Felhasználói fiók törlése',
+    'Return to Main Page': 'Vissza a kezdőoldalra',
 }
 
 export default translations_hu;

@@ -8,6 +8,10 @@ body {
     }
 }
 
+div#root {
+    padding: .7rem;
+}
+
 .btn-group-xs>.btn, .btn-xs {
     --bs-btn-padding-y: 0.1rem;
     --bs-btn-padding-x: 0.25rem;

@@ -1,35 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { useTranslation } from "contexts/TranslationContext";
-// import { useUser } from "contexts/UserContext";
-// import { useTheme } from "contexts/ThemeContext";
 import { useMessages } from "contexts/MessagesContext";
 import { Alert, Fade } from "react-bootstrap";
 
+import "./MessageArea.css";
+
+
 const MessageArea = () => {
-  const { /* language, languages, */ __ /*, changeLanguage*/ } = useTranslation();
-  // const { user, login, logout } = useUser(); // || {};
-  // const { toggleTheme } = useTheme();
+  const { __ } = useTranslation();
   const { messages, removeMessage } = useMessages();
 
   return (
     <>
-      {Object.keys(messages).map((key) => (
+      <div id="messageArea">
+        {Object.keys(messages).map((key) => (
 
-        <Alert
-          key={key}
-          variant={messages[key].type}
-          onClose={() => {
-            removeMessage(key);
-          }}
-          transition={ Fade.in }
-          dismissible
-        >
-          {__(messages[key].message, messages[key].args)}
-        </Alert>
-      ))}
+          <TimedAlert
+            key={key}
+            variant={messages[key].type}
+            onClose={() => {
+              removeMessage(key);
+            }}
+            transition={Fade.in}
+            dismissible
+            timeOut={messages[key].options?.timeOut ?? false}
+          >
+            {__(messages[key].message, messages[key].args)}
+          </TimedAlert>
+        ))}
+      </div>
     </>
   );
 };
+
+const TimedAlert = (props) => {
+
+  const [show, setShow] = useState(props.show);
+
+  useEffect(() => {
+    if (props?.timeOut) {
+      window.setTimeout(() => { setShow(false); }, props?.timeOut)
+    }
+  })
+  const alertProps = { ...props, show }
+
+  return (
+    <Alert {...alertProps} >{JSON.stringify(props)}</Alert>
+  );
+}
 
 export default MessageArea;

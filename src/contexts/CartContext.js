@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useConfig } from "./ConfigContext";
 import { useApi } from "./ApiContext";
 import { useMessages } from "./MessagesContext";
@@ -16,13 +16,15 @@ export const CartProvider = ({ children }) => {
   const { realm } = useConfig();
   const { addMessage } = useMessages();
   const { __ } = useTranslation();
+  const { getConfig, setConfig } = useConfig();
 
-  const [cartItems, setCartItems] = useState(() => {
-    // LOAD
-    const jsonItems = localStorage.getItem(CART_KEY);
-    const items = jsonItems !== null ? JSON.parse(jsonItems) : {};
-    return items;
-  });
+  const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+    if (realm !== null) {
+      setCartItems(getConfig(CART_KEY));
+    }
+  }, [getConfig, realm]);
 
   const loadDrinks = async () => {
     if (!loaded && realm) {
@@ -43,10 +45,10 @@ export const CartProvider = ({ children }) => {
 
   const makeOrder = async () => {
     try {
-      const cart = Object.keys(cartItems).map((key, idx) => { return { ...(parseKey(key)), quantity: cartItems[key] } });
+      const cart = Object.keys(cartItems).map((key, idx) => { return { ...(parseKey(key)), ordered_quantity: cartItems[key] } });
       post('/orders', { cart })
     } catch (error) {
-      console.error('makeOrder', error)
+      console.warn('makeOrder', error)
     }
   }
 
@@ -95,7 +97,7 @@ export const CartProvider = ({ children }) => {
     const newCartItems = { ...cartItems };
     delete newCartItems[key];
     setCartItems(newCartItems);
-    localStorage.setItem(CART_KEY, JSON.stringify(newCartItems));
+    setConfig(CART_KEY, newCartItems);
   };
 
   const addToCart = (drink_id, quantity, unit, quantityToAdd, mode = "add") => {
@@ -120,7 +122,8 @@ export const CartProvider = ({ children }) => {
     }
 
     setCartItems(cartItemsCopy);
-    localStorage.setItem(CART_KEY, JSON.stringify(cartItemsCopy));
+    setConfig(CART_KEY, cartItemsCopy);
+    // localStorage.setItem(CART_KEY, JSON.stringify(cartItemsCopy));
 
     const drink = drinkList[drink_id];
     if (drink) {
@@ -130,10 +133,10 @@ export const CartProvider = ({ children }) => {
       );
       if (selectedUnit) {
         if (mode === "add" && quantityToAdd > 0) {
-          addMessage("success", __("Added :drink to cart", { drink: drink.name }));
+          addMessage("success", "Added :drink to cart", { drink: drink.name }, {timeOut: 2000});
         }
         if (mode === "add" && quantityToAdd < 0) {
-          addMessage("success", __("Removed :drink from cart", { drink: drink.name }));
+          addMessage("success", "Removed :drink from cart", { drink: drink.name }, {timeOut: 2000});
         }
       } else {
         addMessage(
@@ -155,8 +158,8 @@ export const CartProvider = ({ children }) => {
 
     const ret = Object.entries(cartItems)
       .map(([key, orderedQuantity]) => {
-        const { drinkId, quantity, unit } = parseKey(key);
-        const drink = drinkList[drinkId];
+        const { drink_id, quantity, unit } = parseKey(key);
+        const drink = drinkList[drink_id];
         if (drink) {
           const selectedUnit = drink.units.find(
             (u) => parseFloat(u.quantity) === quantity && u.unit_code === unit
@@ -164,8 +167,8 @@ export const CartProvider = ({ children }) => {
           if (selectedUnit) {
             const unitPrice = Number(selectedUnit.unit_price);
             return {
-              id: drinkId,
-              name: drink.name || `Drink #${drinkId}`,
+              id: drink_id,
+              name: drink.name || `Drink #${drink_id}`,
               quantity,
               unit,
               unitPrice,
@@ -208,6 +211,10 @@ export const CartProvider = ({ children }) => {
     return grandTotal;
   };
 
+  const drinkCount = () => {
+    return Object.entries(cartItems).reduce((total, [k, v]) => total + v, 0)
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -219,6 +226,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         getDrinkList,
         makeOrder,
+        drinkCount,
       }}
     >
       {children}
@@ -228,10 +236,10 @@ export const CartProvider = ({ children }) => {
 
 const parseKey = (key) => {
   const [keyId, keyQuantity, keyUnit] = key.split("|");
-  const drinkId = Number(keyId);
+  const drink_id = Number(keyId);
   const quantity = Number(keyQuantity);
   const unit = keyUnit === "" ? null : keyUnit;
-  return { drinkId, quantity, unit };
+  return { drink_id, quantity, unit };
 };
 
 export const useCart = () => useContext(CartContext);

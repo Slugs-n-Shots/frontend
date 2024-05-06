@@ -60,17 +60,23 @@ export default function ShoppingCart() {
                   </td>
                 </tr>
               ))}
+              <tr>
+                <td colSpan="5" className="text-end fw-medium fs-5">{__('Total:')}</td>
+                <td className="text-end fw-medium fs-5">{calculateCartTotal()} Ft</td>
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <td colSpan="7" className="text-end">
+                  <Button className="fs-5"
+                    variant="success"
+                    onClick={() => makeOrder()}
+                  >
+                    {__('Order it!')}
+                  </Button>
+                </td>
+              </tr>
             </tbody>
           </Table>
-          <p>
-            {__('Total Price')}: {calculateCartTotal()}
-          </p>
-          <Button
-            variant="secondary"
-          onClick={() => makeOrder()}
-          >
-            Order for ___ Ft !
-          </Button>
         </>
 
       ) : (<div>{__('Your cart is empty, why don\'t you order something?')}</div>)}
