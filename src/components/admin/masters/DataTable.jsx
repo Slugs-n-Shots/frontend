@@ -322,7 +322,7 @@ function TableRow(props) {
   let object = props.object;
   return (
     <tr>
-      <td style={{ "whiteSpace": "nowrap" }}>
+      <td class="text-nowrap">
         <i
           className="action-show fa-solid fa-magnifying-glass"
           title={__('View this :model', { 'model': __(model.name) })}

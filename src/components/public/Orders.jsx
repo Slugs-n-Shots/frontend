@@ -1,13 +1,11 @@
-// export default function Orders() { return <div>Orders</div> }
-
-import { Fragment, useEffect, useState } from "react";
 import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { useTranslation } from "contexts/TranslationContext";
-import { Button, Col, Row, Table } from "react-bootstrap";
+import { Fragment, useEffect, useState } from "react";
+import { Col, Row, Table, Button } from "react-bootstrap";
 import "./Orders.css";
 
-export default function Orders() {
+const Orders = () => {
 
   const [loaded, setLoaded] = useState(false);
   const { get } = useApi();
@@ -109,3 +107,5 @@ const DetTable = ({ item }) => {
     </Table>
   )
 }
+
+export default Orders;

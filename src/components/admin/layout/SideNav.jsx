@@ -43,6 +43,14 @@ const SideNav = () => {
               {__('Employees')}
             </NavLink>
           )}
+          {userHasRoles(['waiter', 'barkeeper']) && (
+            <NavLink className="nav-link" to="/admin/orders/waiting">
+              <div className="sb-nav-link-icon">
+                <i className="fas fa-stopwatch"></i>
+              </div>
+              {__('Waiting Orders')}
+            </NavLink>
+          )}
 
           {/* new */}
           <div className="sb-sidenav-menu-heading">Interface</div>

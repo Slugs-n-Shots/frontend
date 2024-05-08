@@ -24,7 +24,7 @@ const MessageArea = () => {
             }}
             transition={Fade.in}
             dismissible
-            timeOut={messages[key].options?.timeOut ?? false}
+            timeOut={messages[key].options?.timeOut }
           >
             {__(messages[key].message, messages[key].args)}
           </TimedAlert>
@@ -37,13 +37,13 @@ const MessageArea = () => {
 const TimedAlert = (props) => {
 
   const [show, setShow] = useState(props.show);
+  const {timeOut, ...alertProps} = { ...props, show }
 
   useEffect(() => {
-    if (props?.timeOut !== undefined) {
-      window.setTimeout(() => { setShow(false); }, props?.timeOut)
+    if (timeOut !== undefined) {
+      window.setTimeout(() => { setShow(false); }, timeOut)
     }
   })
-  const alertProps = { ...props, show }
 
   return (
     <Alert {...alertProps} >{props.children}</Alert>
