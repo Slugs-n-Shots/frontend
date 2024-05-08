@@ -43,7 +43,7 @@ const SideNav = () => {
               {__('Employees')}
             </NavLink>
           )}
-          {userHasRoles(['waiter', 'barkeeper']) && (
+          {userHasRoles(['waiter', 'bartender']) && (
             <NavLink className="nav-link" to="/admin/orders/waiting">
               <div className="sb-nav-link-icon">
                 <i className="fas fa-stopwatch"></i>

@@ -7,14 +7,14 @@ import { Col, Row, Table, Button } from "react-bootstrap";
 const WaitingOrders = () => {
 
   const [loaded, setLoaded] = useState(false);
-  const { get } = useApi();
+  const { get, post } = useApi();
   const [orders, setOrders] = useState([]);
   const { addMessage } = useMessages();
   const { language, __, formatDateTime, formatAgo } = useTranslation();
   const [currentTime, setCurrentTime] = useState(Date.now());
 
   useEffect(() => {
-    // Update the current time every second
+    // Update the elapsed times periodically
     const timer = setInterval(() => {
       setCurrentTime(Date.now());
     }, 10000);
@@ -70,13 +70,13 @@ const WaitingOrders = () => {
   const colorizeRow = (secs) => {
     const thresholds = {
       300: 'success', // 5 perc
-      600: 'info', // 10 perc
+      600: 'info',    // 10 perc
       720: 'warning', // 12 perc
       1000000: 'danger',
     }
 
-    const ret = Object.entries(thresholds).filter(([limit, color]) => { console.log('::', limit, color); return Number(secs) < Number(limit) });
-    console.log('colorize', secs, ret)
+    const ret = Object.entries(thresholds).filter(([limit, color]) => Number(secs) < Number(limit));
+    // console.log('colorize', secs, ret)
     return ret[0][1];
   }
 
@@ -93,6 +93,19 @@ const WaitingOrders = () => {
         })
     }
   }, [addMessage, get, loaded, language])
+
+  const assignOrder = (id) => {
+    post('orders/assign/' + Number(id))
+    .then(response => {
+      addMessage("success", "Order assigned to you", {}, {timeOut: 2000});
+      setLoaded(false)
+    })
+    .catch(error => {
+      console.warn(error);
+      addMessage("danger", error.statusText);
+    })
+}
+
   return (
     <article>
       <h2>{__('Waiting Orders')}</h2>
@@ -120,7 +133,7 @@ const WaitingOrders = () => {
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity, 0)}</td>
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity * det.drink_unit.unit_price, 0)} Ft</td>
                   <td className="text-nowrap">
-                  <Button size="sm">{__('Assign it to myself')}</Button>
+                    <Button size="sm" onClick={() => assignOrder(item.id)}>{__('Assign it to myself')}</Button>
                     <Button variant="link"
                       className="waiting-order-details-collapse-button"
                       aria-expanded="false"
@@ -145,7 +158,7 @@ const WaitingOrders = () => {
           )}
         </tbody>
       </Table>
-      {/* <pre>{JSON.stringify(orders, null, 4)}</pre> */}
+      <pre>{JSON.stringify(orders, null, 4)}</pre>
     </article>
   )
 }
