@@ -100,6 +100,11 @@ const adminRoutes = [
         "component": "admin/WaitingOrders",
         "roles": ["bartender", "waiter", "admin"]
     },
+    {
+        "path": "/admin/orders/my-open-tasks",
+        "component": "admin/MyTasks",
+        "roles": ["bartender", "waiter", "admin"]
+    },
 ]
 
 export default adminRoutes

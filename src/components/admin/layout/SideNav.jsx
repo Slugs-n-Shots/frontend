@@ -52,6 +52,15 @@ const SideNav = () => {
             </NavLink>
           )}
 
+          {userHasRoles(['waiter', 'bartender']) && (
+            <NavLink className="nav-link" to="/admin/orders/my-open-tasks">
+              <div className="sb-nav-link-icon">
+                <i className="fas fa-list-ol"></i>
+              </div>
+              {__('My Open Tasks')}
+            </NavLink>
+          )}
+
           {/* new */}
           <div className="sb-sidenav-menu-heading">Interface</div>
           <a

@@ -4,7 +4,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import { Fragment, useEffect, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
 
-const WaitingOrders = () => {
+const MyTasks = () => {
 
   const [loaded, setLoaded] = useState(false);
   const { get, post } = useApi();
@@ -82,7 +82,7 @@ const WaitingOrders = () => {
 
   useEffect(() => {
     if (true || !loaded) {
-      get('orders/waiting')
+      get('orders/my-tasks')
         .then(response => {
           setOrders(response.data)
           setLoaded(true)
@@ -94,21 +94,34 @@ const WaitingOrders = () => {
     }
   }, [addMessage, get, loaded, language])
 
-  const assignOrder = (id) => {
-    post('orders/assign/' + Number(id))
-    .then(response => {
-      addMessage("success", "Order assigned to you", {}, {timeOut: 2000});
-      setLoaded(false)
-    })
-    .catch(error => {
-      console.warn(error);
-      addMessage("danger", error.statusText);
-    })
-}
+  const markAsDone = (id) => {
+    post('orders/done/' + Number(id))
+      .then(response => {
+        addMessage("success", "Order marked as done.", {}, { timeOut: 2000 });
+        setLoaded(false)
+      })
+      .catch(error => {
+        console.warn(error);
+        addMessage("danger", error.statusText);
+      })
+  }
+
+  const undoAssignOrder = (id) => {
+    post('orders/undo-assign/' + Number(id))
+      .then(response => {
+        addMessage("success", "Order assignment reverted", {}, { timeOut: 2000 });
+        setLoaded(false)
+      })
+      .catch(error => {
+        console.warn(error);
+        addMessage("danger", error.statusText);
+      })
+  }
+
 
   return (
     <article>
-      <h2>{__('Waiting Orders')}</h2>
+      <h2>{__('My Open Tasks')}</h2>
       <Table>
         <thead>
           <tr>
@@ -133,7 +146,8 @@ const WaitingOrders = () => {
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity, 0)}</td>
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity * det.drink_unit.unit_price, 0)} Ft</td>
                   <td className="text-nowrap">
-                    <Button size="sm" onClick={() => assignOrder(item.id)}>{__('Assign it to myself')}</Button>
+                  <Button size="sm" variant="danger" className="me-sm-2" onClick={() => undoAssignOrder(item.id)}>{__('Undo assigments')}</Button>
+                  <Button size="sm" variant="success" onClick={() => markAsDone(item.id)}>{__('Mark as done')}</Button>
                     <Button variant="link"
                       className="waiting-order-details-collapse-button"
                       aria-expanded="false"
@@ -194,4 +208,4 @@ const DetTable = ({ item }) => {
   )
 }
 
-export default WaitingOrders;
+export default MyTasks;
