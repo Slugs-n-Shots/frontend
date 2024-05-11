@@ -1,11 +1,11 @@
 import { useData } from "components/admin/masters/DataTable";
 import { useTranslation } from "contexts/TranslationContext";
 import { capitalize } from "models/MiscHelper";
-import { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 
 
-function DataModal({ state }) {
+const DataModal = ({ state }) => {
   const { model, fields, error, events } = useData()
   const [formValid, setFormValid] = useState(false);
   const { __ } = useTranslation();
@@ -38,11 +38,16 @@ function DataModal({ state }) {
   const handleChange = (event) => {
     if (!(state?.readOnly ?? false)) {
       const field = event.target.name;
-      const value = event.target.type !== "checkbox" ? event.target.value : event.target.checked
-      const newFormData = { ...formData, [field]: value };
-      setFormData(newFormData);
+      const value = event.target.type !== "checkbox" ? event.target.value : event.target.checked;
+      handleFieldChange(field, value);
     }
   };
+
+  const handleFieldChange = (field, value) => {
+    const newFormData = { ...formData, [field]: value };
+    setFormData(newFormData);
+
+  }
 
   const title = __(state?.readOnly ? 'View :model' : (formData.id ? 'Edit :model' : 'New :model'), { model: __(model.name) })
 
@@ -75,7 +80,7 @@ function DataModal({ state }) {
           {/* {JSON.stringify(fieldErrors)} */}
           <Form
 
-            valid={formValid? "valid": "invalid"}
+            valid={formValid ? "valid" : "invalid"}
             onSubmit={() => {
               console.log("submit!");
             }}
@@ -110,7 +115,7 @@ function DataModal({ state }) {
                   messages={fieldErrors?.fields?.[e.name] ?? []}
                   name={e.name} />
               case 'master':
-                return <SelectField key={i}
+                return <MasterSelectField key={i}
                   title={e.title}
                   readOnly={e.readOnly ?? false}
                   onChange={handleChange}
@@ -120,11 +125,14 @@ function DataModal({ state }) {
                   name={e.name} />
 
               default:
-                return <></>
-
+                return <Fragment key={i}>Unknown field type</Fragment>
             }
           }
           )}
+            {state?.snapIns && state.snapIns.map((e, i) =>
+              <SnapInField key={i} name="units" component={e.component} value={formData.units} onChange={handleChange}
+              onFieldChange={handleFieldChange} />
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -142,11 +150,32 @@ function DataModal({ state }) {
   );
 }
 
-export default DataModal;
-
 const SelectField = (props) => {
-  const { fields, masterData } = useData()
   const { __, language } = useTranslation();
+  const options = props.options ?? [];
+  console.log('options', options)
+  return (
+    <Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
+      <Form.Label>{__(props.title)}</Form.Label>
+      <Form.Select
+        type="text"
+        readOnly={props.readOnly ?? undefined}
+        value={props.value}
+        onChange={props.onChange}
+        name={props.name}
+        validated={undefined}
+      >
+        {options && Object.entries(options).map(([key, value], i) => <option key={i} value={key}>{value[language]}</option>)}
+      </Form.Select>
+      <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
+        {props?.messages && props?.messages.map((msg, i) => <div key={i}>{msg}</div>)}
+      </Form.Control.Feedback>
+    </Form.Group>
+  )
+}
+
+const MasterSelectField = (props) => {
+  const { fields, masterData } = useData()
 
   const field = fields.filter(e => e.name === props.name)[0] ?? undefined;
   const master = masterData[field.dataModel] ?? undefined;
@@ -155,23 +184,10 @@ const SelectField = (props) => {
     console.warn(props.name, field)
   }
 
+  console.log('master', master)
+
   return (
-    <Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
-      <Form.Label>{__(props.title)}</Form.Label>
-      <Form.Select
-        type="text"
-        readOnly={props.readOnly ?? false}
-        value={props.value}
-        onChange={props.onChange}
-        name={props.name}
-        validated={false}
-        >
-        {master && Object.entries(master).map(([key, value], i) => <option key={i} value={key}>{value[language]}</option>)}
-      </Form.Select>
-      <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
-      {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
-    </Form.Control.Feedback>
-    </Form.Group>
+    <SelectField options={master} {...props} />
   )
 }
 
@@ -201,8 +217,8 @@ const BooleanField = (props) => {
 
 const TextField = (props) => {
   const { __ } = useTranslation();
-
-  return (<Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
+  console.log('textfield props', props)
+  return props && (<Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
     <Form.Label>{__(props.title)}</Form.Label>
     {/* <div>{JSON.stringify({messages: props.messages, valid: props?.valid ?? "?"})}</div> */}
     <Form.Control
@@ -211,13 +227,13 @@ const TextField = (props) => {
       value={props.value}
       onChange={props.onChange}
       name={props.name}
-      validated={false}
+      validated={undefined}
     />
-    <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
-      {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
+    <Form.Control.Feedback role="alert" type={props?.valid ? "valid" : "invalid"}>
+      {props?.messages && props?.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
     </Form.Control.Feedback>
-  </Form.Group>
-  )
+  </Form.Group>)
+
 }
 
 const LongTextField = (props) => {
@@ -241,3 +257,12 @@ const LongTextField = (props) => {
   )
 }
 
+const SnapInField = (props) => {
+  const { component, ...childProps } = { ...props };
+  return (
+    React.createElement(require(`components/admin/masters/snapIns/${component}`).default, childProps)
+  )
+}
+
+export default DataModal;
+export { BooleanField, TextField, LongTextField, SelectField, MasterSelectField }

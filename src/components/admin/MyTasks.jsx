@@ -192,7 +192,7 @@ const DetTable = ({ item }) => {
       <tbody>
         {item.details.map((det, iDet) => (
           <tr key={iDet}>
-            <td className="text-end">{det.ordered_quantity} x {det.drink_unit.quantity} {det.drink_unit.unit ?? __('glass')}</td>
+            <td className="text-end">{det.ordered_quantity} x {det.drink_unit.quantity} {det.drink_unit.unit}</td>
             <td>{det.drink_unit.drink.name}</td>
             <td className="text-end">{det.ordered_quantity * det.drink_unit.unit_price} Ft</td>
           </tr>

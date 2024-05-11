@@ -33,7 +33,7 @@ export default function ShoppingCart() {
                   <td>#{item.id} {item.name}</td>
                   <td className="text-end">{item.unitPrice} Ft</td>
                   <td className="text-end">
-                    {formatNumber(item.quantity)} {item.unit ?? __('glass')}
+                    {formatNumber(item.quantity)} {item.unit}
                   </td>
                   <td>
                     <QuantityEdit style={{ maxWidth: 200 }}

@@ -123,7 +123,7 @@ function DrinkCard(props) {
           </Card.Title>
           {units.map((unit, index) => (<div key={index}>
             <div className="row gx-1">
-              <div className="col-2 nowrap">{formatNumber(unit.quantity)} {unit.unit_code === null ? __("glass") : unit.unit}</div>
+              <div className="col-2 nowrap">{formatNumber(unit.quantity)} {unit.unit}</div>
               <div className="col-3 text-end nowrap">{formatNumber(unit.unit_price)} Ft</div>
               <div className="col-7 text-end nowrap"><Button size="xs"
                 variant="light"

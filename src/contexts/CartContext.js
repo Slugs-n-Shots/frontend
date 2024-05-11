@@ -64,9 +64,6 @@ export const CartProvider = ({ children }) => {
       Object.keys(outCat.drinks ?? {}).forEach((key) => {
         // főkategóris italok
         const drink = outCat.drinks[key];
-        if (drink.unit_code === null) {
-          drink.unit = __("glass");
-        }
         drinkList[drink.id] = drink;
       });
       Object.keys(outCat.subcategory ?? {}).forEach((key2) => {
@@ -75,9 +72,6 @@ export const CartProvider = ({ children }) => {
         Object.keys(inCat.drinks ?? {}).forEach((key) => {
           // főkategóris italok
           const drink = inCat.drinks[key];
-          if (drink.unit_code === null) {
-            drink.unit = __("glass");
-          }
           drinkList[drink.id] = drink;
         });
       });
