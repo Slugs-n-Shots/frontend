@@ -2,7 +2,8 @@ import { Table, Button } from "react-bootstrap";
 import { useCart } from "contexts/CartContext";
 import "./drinks.css";
 import { useTranslation } from "contexts/TranslationContext";
-import QuantityEdit from "components/common/QuantityEdit.jsx";
+import QuantityEdit from "components/common/QuantityEdit";
+import config from "models/config";
 
 export default function ShoppingCart() {
   const { detailedCartItems, removeFromCart, addToCart, calculateCartTotal, makeOrder } = useCart();
@@ -31,7 +32,7 @@ export default function ShoppingCart() {
                 <tr key={index}>
                   <td className="text-end">{index + 1}</td>
                   <td>#{item.id} {item.name}</td>
-                  <td className="text-end">{item.unitPrice} Ft</td>
+                  <td className="text-end">{item.unitPrice} {config.currency}</td>
                   <td className="text-end">
                     {formatNumber(item.quantity)} {item.unit}
                   </td>
@@ -45,7 +46,7 @@ export default function ShoppingCart() {
                       }
                     />
                   </td>
-                  <td className="text-end">{item.total} Ft</td>
+                  <td className="text-end">{item.total} {config.currency}</td>
                   <td className="text-center">
                     <Button
                       variant="danger"
@@ -61,7 +62,7 @@ export default function ShoppingCart() {
               ))}
               <tr>
                 <td colSpan="5" className="text-end fw-medium fs-5">{__('Total:')}</td>
-                <td className="text-end fw-medium fs-5">{calculateCartTotal()} Ft</td>
+                <td className="text-end fw-medium fs-5">{calculateCartTotal()} {config.currency}</td>
                 <td>&nbsp;</td>
               </tr>
               <tr>

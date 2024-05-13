@@ -6,6 +6,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import { useCart } from "contexts/CartContext";
 import { useState } from "react";
 import { useConfig } from "contexts/ConfigContext";
+import config from "models/config";
 
 const KEY_ACCORDION_STATES = 'drAcc';
 export default function Drinks() {
@@ -124,7 +125,7 @@ function DrinkCard(props) {
           {units.map((unit, index) => (<div key={index}>
             <div className="row gx-1">
               <div className="col-2 nowrap">{formatNumber(unit.quantity)} {unit.unit}</div>
-              <div className="col-3 text-end nowrap">{formatNumber(unit.unit_price)} Ft</div>
+              <div className="col-3 text-end nowrap">{formatNumber(unit.unit_price)} {config.currency}</div>
               <div className="col-7 text-end nowrap"><Button size="xs"
                 variant="light"
                 onClick={() => handleAddToCart(unit)}

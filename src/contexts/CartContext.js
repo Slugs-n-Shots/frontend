@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useConfig } from "./ConfigContext";
 import { useApi } from "./ApiContext";
 import { useMessages } from "./MessagesContext";
-import { useTranslation } from "./TranslationContext";
 
 const CartContext = createContext();
 
@@ -15,9 +14,7 @@ export const CartProvider = ({ children }) => {
   const { get, post } = useApi();
   const { realm } = useConfig();
   const { addMessage } = useMessages();
-  const { __ } = useTranslation();
   const { getConfig, setConfig } = useConfig();
-
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {

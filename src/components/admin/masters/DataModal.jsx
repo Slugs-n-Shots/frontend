@@ -1,6 +1,7 @@
 import { useData } from "components/admin/masters/DataTable";
 import { useTranslation } from "contexts/TranslationContext";
 import { capitalize } from "models/MiscHelper";
+import config from "models/config";
 import React, { Fragment, useEffect, useState } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 
@@ -67,6 +68,7 @@ const DataModal = ({ state }) => {
   return (
     <>
       <Modal
+        size="md"
         show={+state?.visible}
         // show="true"
         onHide={handleClose}
@@ -130,8 +132,8 @@ const DataModal = ({ state }) => {
           }
           )}
             {state?.snapIns && state.snapIns.map((e, i) =>
-              <SnapInField key={i} name="units" component={e.component} value={formData.units} onChange={handleChange}
-              onFieldChange={handleFieldChange} />
+              <SnapInField key={i} name="units" component={e.component} value={formData.units} onChange={handleChange} objectId={formData.id}
+                onFieldChange={handleFieldChange} />
             )}
           </Form>
         </Modal.Body>
@@ -154,9 +156,9 @@ const SelectField = (props) => {
   const { __, language } = useTranslation();
   const options = props.options ?? [];
   console.log('options', options)
-  return (
-    <Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
-      <Form.Label>{__(props.title)}</Form.Label>
+  return (<>
+    {props.title && <Form.Label>{__(props.title)}</Form.Label>}
+    <Form.Group className="input-group" controlId={"form" + capitalize(props.name)}>
       <Form.Select
         type="text"
         readOnly={props.readOnly ?? undefined}
@@ -170,7 +172,7 @@ const SelectField = (props) => {
       <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
         {props?.messages && props?.messages.map((msg, i) => <div key={i}>{msg}</div>)}
       </Form.Control.Feedback>
-    </Form.Group>
+    </Form.Group></>
   )
 }
 
@@ -198,9 +200,9 @@ const BooleanField = (props) => {
     props.onChange(e)
   };
   // value={props.value}
-  return (
-    <Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
-      <Form.Label>{__(props.title)}</Form.Label>
+  return (<>
+    {props.title && <Form.Label>{__(props.title)}</Form.Label>}
+    <Form.Group className="input-group" controlId={"form" + capitalize(props.name)}>
       <Form.Check
         type="checkbox"
         disabled={props.readOnly ?? false}
@@ -212,35 +214,57 @@ const BooleanField = (props) => {
       <Form.Control.Feedback role="alert" type={props.valid ? "valid" : "invalid"}>
         {props.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
       </Form.Control.Feedback>
-    </Form.Group>)
+    </Form.Group></>)
 }
 
 const TextField = (props) => {
   const { __ } = useTranslation();
-  console.log('textfield props', props)
-  return props && (<Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
-    <Form.Label>{__(props.title)}</Form.Label>
-    {/* <div>{JSON.stringify({messages: props.messages, valid: props?.valid ?? "?"})}</div> */}
-    <Form.Control
-      type="text"
-      readOnly={props.readOnly ?? false}
-      value={props.value}
-      onChange={props.onChange}
-      name={props.name}
-      validated={undefined}
-    />
-    <Form.Control.Feedback role="alert" type={props?.valid ? "valid" : "invalid"}>
-      {props?.messages && props?.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
-    </Form.Control.Feedback>
-  </Form.Group>)
 
+  return props && (<>
+    {props.title && <Form.Label>{__(props.title)}</Form.Label>}
+    <Form.Group className={props?.prepend || props?.append ? "input-group" : ""} controlId={"form" + capitalize(props.name)}>
+      {/* <div>{JSON.stringify(props)}</div> */}
+
+      {props?.prepend}
+      <Form.Control
+        type="text"
+        readOnly={props.readOnly ?? false}
+        className={props.className ?? false}
+        value={props.value}
+        onChange={props.onChange}
+        name={props.name}
+        validated={undefined}
+      />
+      {props?.append &&
+        <span className="input-group-text">{config.currency}</span>}
+
+      <Form.Control.Feedback role="alert" type={props?.valid ? "valid" : "invalid"}>
+        {props?.messages && props?.messages.map((msg, i) => <div key={i}>*{msg}</div>)}
+      </Form.Control.Feedback>
+    </Form.Group>
+  </>)
+
+}
+
+const NumberField = (props) => {
+  return <TextField {...props} />
+}
+
+const CurrencyField = (props) => {
+  const { currency, ...others } = props
+
+  return (
+    <>
+      <TextField {...others} append={" " + config.currency} />
+    </>
+  )
 }
 
 const LongTextField = (props) => {
   const { __ } = useTranslation();
 
   return (<Form.Group className="mb-3" controlId={"form" + capitalize(props.name)}>
-    <Form.Label>{__(props.title)}</Form.Label>
+    {props.title && <Form.Label>{__(props.title)}</Form.Label>}
     <Form.Control
       as="textarea"
 
@@ -265,4 +289,4 @@ const SnapInField = (props) => {
 }
 
 export default DataModal;
-export { BooleanField, TextField, LongTextField, SelectField, MasterSelectField }
+export { BooleanField, TextField, NumberField, CurrencyField, LongTextField, SelectField, MasterSelectField }

@@ -1,6 +1,7 @@
 import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { useTranslation } from "contexts/TranslationContext";
+import config from "models/config";
 import { Fragment, useEffect, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
 
@@ -144,7 +145,7 @@ const MyTasks = () => {
                   <td>{item.status}</td>
                   <td>{item.guest.name}</td>
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity, 0)}</td>
-                  <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity * det.drink_unit.unit_price, 0)} Ft</td>
+                  <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity * det.drink_unit.unit_price, 0)} {config.currency}</td>
                   <td className="text-nowrap">
                   <Button size="sm" variant="danger" className="me-sm-2" onClick={() => undoAssignOrder(item.id)}>{__('Undo assigments')}</Button>
                   <Button size="sm" variant="success" onClick={() => markAsDone(item.id)}>{__('Mark as done')}</Button>
@@ -194,14 +195,14 @@ const DetTable = ({ item }) => {
           <tr key={iDet}>
             <td className="text-end">{det.ordered_quantity} x {det.drink_unit.quantity} {det.drink_unit.unit}</td>
             <td>{det.drink_unit.drink.name}</td>
-            <td className="text-end">{det.ordered_quantity * det.drink_unit.unit_price} Ft</td>
+            <td className="text-end">{det.ordered_quantity * det.drink_unit.unit_price} {config.currency}</td>
           </tr>
         ))}
       </tbody>
       <tfoot>
         <tr>
           <td className="text-end fw-semibold" colSpan={2}>{__('Total')}:</td>
-          <td className="text-end fw-semibold">{subTotal} Ft</td>
+          <td className="text-end fw-semibold">{subTotal} {config.currency}</td>
         </tr>
       </tfoot>
     </Table>

@@ -1,17 +1,15 @@
 import { Link, NavLink } from "react-router-dom";
-import ToggleTheme from "components/common/ToggleTheme.jsx";
+import ToggleTheme from "components/common/ToggleTheme";
 import { useTranslation } from "contexts/TranslationContext";
 import { useUser } from "contexts/UserContext";
 // import { useConfig } from "contexts/ConfigContext";
 import config from "models/config";
 import { useCart } from "contexts/CartContext.js";
-import { useTheme } from "contexts/ThemeContext.js";
 
 const TopNav = () => {
   const { __, language, languages, changeLanguage } = useTranslation();
   const { user, logout } = useUser();
   const { drinkCount } = useCart();
-  const { theme } = useTheme();
 
   const count = drinkCount();
   return (

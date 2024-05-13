@@ -155,6 +155,9 @@ const translations_hu = {
     ":seconds seconds": ":seconds másodperc",
     "less than 1 minute": "kevesebb, mint 1 perc",
     "Assign it to myself": "Magamhoz rendelem",
+    "Units": "Mennyiségek",
+    "Add Unit": "Mennyiség hozzáadása",
+
 }
 
 export default translations_hu;
