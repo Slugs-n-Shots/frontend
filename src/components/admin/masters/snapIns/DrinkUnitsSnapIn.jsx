@@ -78,7 +78,7 @@ const DrinkUnitsSnapIn = (props) => {
                 </tbody>
             </Table >
 
-            <pre>{JSON.stringify(formData, null, 4)}</pre>
+            {/* <pre>{JSON.stringify(formData, null, 4)}</pre> */}
         </>
     )
 }
