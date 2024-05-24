@@ -8,6 +8,7 @@ const baseURL = 'http://localhost:8000/api/';
 
 const config = {
     appName: 'Slugs\'n\'Shots',
+    currency: 'Ft',
     lang: chooseLanguage() ?? 'hu',
     baseURL: baseURL,
     user: null,

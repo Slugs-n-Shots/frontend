@@ -66,6 +66,30 @@ export const TranslationProvider = ({ children }) => {
         }
     }
 
+    function formatAgo(fmt, replace) {
+        if (language === 'hu') {
+            const split = replace.time.split(" ")
+            switch (split.pop()) {
+                case 'nap':
+                    split.push('napja')
+                    break;
+                case 'óra':
+                    split.push('órája')
+                    break;
+                case 'perc':
+                    split.push('perce')
+                    break;
+                case 'másodperc':
+                    split.push('másodperce')
+                    break;
+                default:
+            }
+            return split.join(' ');
+        } else {
+            return __(':time ago', replace);
+        }
+    }
+
     return (
         <TranslationContext.Provider value={{
             language,
@@ -74,7 +98,8 @@ export const TranslationProvider = ({ children }) => {
             changeLanguage,
             formatDate,
             formatDateTime,
-            formatNumber
+            formatNumber,
+            formatAgo
         }}>
             {children}
         </TranslationContext.Provider>

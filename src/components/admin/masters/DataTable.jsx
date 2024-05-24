@@ -14,7 +14,7 @@ const DataTable = (props) => {
   const { languages, __ } = useTranslation();
 
 
-  const { url, model, masters } = props; // , fields, validateInsert, validateUpdate
+  const { url, model, masters, snapIns } = props; // , fields, validateInsert, validateUpdate
 
   const [objects, setObjects] = useState([]);
   const [masterData, setMasterData] = useState({});
@@ -26,6 +26,7 @@ const DataTable = (props) => {
     readOnly: false,
     visible: false,
     saveEvent: null,
+    snapIns,
     messages: [],
   });
 
@@ -116,6 +117,7 @@ const DataTable = (props) => {
       readOnly: false,
       visible: true,
       saveEvent: DataStoreEvent,
+      snapIns,
       messages: [],
     });
   };
@@ -129,6 +131,7 @@ const DataTable = (props) => {
       readOnly: true,
       visible: true,
       saveEvent: null,
+      snapIns,
       messages: [],
     });
   };
@@ -144,6 +147,7 @@ const DataTable = (props) => {
       readOnly: false,
       visible: true,
       saveEvent: DataUpdateEvent,
+      snapIns,
       messages: [],
     });
   };
@@ -298,7 +302,9 @@ function TableBody() {
           case 'string':
             return a[sortCol].localeCompare(b[sortCol]) * (sortDir === 'asc' ? 1 : -1);
           case 'date':
-            return Date.parse(a[sortCol]) - Date.parse(b[sortCol]);
+            return (Date.parse(a[sortCol]) - Date.parse(b[sortCol])) * (sortDir === 'asc' ? 1 : -1);
+          case 'master':
+            return (a[sortCol] - b[sortCol])  * (sortDir === 'asc' ? 1 : -1);
           default:
             return 0;
         }
@@ -322,7 +328,7 @@ function TableRow(props) {
   let object = props.object;
   return (
     <tr>
-      <td style={{ "whiteSpace": "nowrap" }}>
+      <td className="text-nowrap">
         <i
           className="action-show fa-solid fa-magnifying-glass"
           title={__('View this :model', { 'model': __(model.name) })}

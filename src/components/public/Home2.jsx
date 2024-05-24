@@ -6,7 +6,7 @@ import { Col, Row, Table, Button } from "react-bootstrap";
 import config from "models/config";
 import "./Orders.css";
 
-const Orders = () => {
+const Home2 = () => {
 
   const [loaded, setLoaded] = useState(false);
   const { get } = useApi();
@@ -29,7 +29,7 @@ const Orders = () => {
   }, [addMessage, get, loaded, language])
   return (
     <article>
-      <h2>{__('Orders')}</h2>
+      <h2>{__('My Orders')}</h2>
       <Table>
         <thead>
           <tr>
@@ -109,4 +109,4 @@ const DetTable = ({ item }) => {
   )
 }
 
-export default Orders;
+export default Home2;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useUser } from "contexts/UserContext";
-import NoPage from "./NoPage.jsx";
+import NoPage from "./NoPage";
 import { useMessages } from "contexts/MessagesContext";
 import { useApi } from "contexts/ApiContext";
 import { useTranslation } from "contexts/TranslationContext";

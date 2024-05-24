@@ -28,24 +28,41 @@ const SideNav = () => {
     <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
       <div className="sb-sidenav-menu">
         <div className="nav">
-          <div className="sb-sidenav-menu-heading">Core</div>
+          <div className="sb-sidenav-menu-heading">{__('Basic tasks')}</div>
           <NavLink className="nav-link" to="/admin/">
             <div className="sb-nav-link-icon">
               <i className="fas fa-tachometer-alt"></i>
             </div>
             {__("Dashboard")}
           </NavLink>
-          {userHasRole('backoffice') && (
+          {/* {userHasRole('backoffice') && (
             <NavLink className="nav-link" to="/admin/register">
               <div className="sb-nav-link-icon">
                 <i className="fas fa-tachometer-alt"></i>
               </div>
               {__('Employees')}
             </NavLink>
+          )} */}
+          {userHasRoles(['waiter', 'bartender']) && (
+            <NavLink className="nav-link" to="/admin/orders/waiting">
+              <div className="sb-nav-link-icon">
+                <i className="fas fa-stopwatch"></i>
+              </div>
+              {__('Waiting Orders')}
+            </NavLink>
+          )}
+
+          {userHasRoles(['waiter', 'bartender']) && (
+            <NavLink className="nav-link" to="/admin/orders/my-open-tasks">
+              <div className="sb-nav-link-icon">
+                <i className="fas fa-list-ol"></i>
+              </div>
+              {__('My Open Tasks')}
+            </NavLink>
           )}
 
           {/* new */}
-          <div className="sb-sidenav-menu-heading">Interface</div>
+          <div className="sb-sidenav-menu-heading">{__('Data')}</div>
           <a
             className="nav-link collapsed"
             href="#!"
@@ -119,7 +136,7 @@ const SideNav = () => {
               )}
             </nav>
           </div>
-          <a className="nav-link collapsed" href="#!" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+          {/* <a className="nav-link collapsed" href="#!" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
             <div className="sb-nav-link-icon"><i className="fas fa-book-open"></i></div>Pages
             <div className="sb-sidenav-collapse-arrow"><i className="fas fa-angle-down"></i></div>
           </a>
@@ -196,9 +213,9 @@ const SideNav = () => {
                 </nav>
               </div>
             </nav>
-          </div>
+          </div> */}
           {/* /new */}
-          {/* original */}
+          {/* original * / }
           <div className="sb-sidenav-menu-heading">Interface</div>
           <a
             className="nav-link collapsed"
@@ -324,8 +341,8 @@ const SideNav = () => {
               </div>
             </nav>
           </div>
-          {/* /original */}
-          <div className="sb-sidenav-menu-heading">Addons</div>
+          { / * /original */}
+          {/* <div className="sb-sidenav-menu-heading">Addons</div>
           <NavLink className="nav-link" data-eventkey="charts.html">
             <div className="sb-nav-link-icon">
               <i className="fas fa-chart-area"></i>
@@ -341,7 +358,7 @@ const SideNav = () => {
               <i className="fas fa-table"></i>
             </div>
             {__("Tables")}
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
       <div className="sb-sidenav-footer">

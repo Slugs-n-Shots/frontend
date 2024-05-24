@@ -1,4 +1,4 @@
-import DataTable from "components/admin/masters/DataTable.jsx";
+import DataTable from "components/admin/masters/DataTable";
 
 const EmployeeMaster = () => {
 
