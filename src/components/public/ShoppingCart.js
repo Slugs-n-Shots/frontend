@@ -61,7 +61,7 @@ export default function ShoppingCart() {
                 </tr>
               ))}
               <tr>
-                <td colSpan="5" className="text-end fw-medium fs-5">{__('Total:')}</td>
+                <td colSpan="5" className="text-end fw-medium fs-5">{__('Total')}:</td>
                 <td className="text-end fw-medium fs-5">{calculateCartTotal()} {config.currency}</td>
                 <td>&nbsp;</td>
               </tr>

@@ -26,19 +26,21 @@ const AdminPageLayout = () => {
           <SideNav />
         </div>
         <div id="layoutSidenav_content">
-          <ContentArea />
-          <footer>
-            <div className="container-fluid px-4">
-              <div className="d-flex align-items-center justify-content-between small">
-                <div>Copyright &copy; {config.appName} {new Date().getFullYear()}</div>
-                <div>
-                  <Link to={realm_path + "/privacy"}>{__('Privacy Policy')}</Link>
-                  &middot;
-                  <Link to={realm_path + "/terms"}>{__('Terms &amp; Conditions')}</Link>
+          <div id="admin-layout-wrapper" className="p-1">
+            <ContentArea />
+            <footer>
+              <div className="container-fluid px-4">
+                <div className="d-flex align-items-center justify-content-between small">
+                  <div>Copyright &copy; {config.appName} {new Date().getFullYear()}</div>
+                  <div>
+                    <Link to={realm_path + "/privacy"}>{__('Privacy Policy')}</Link>
+                    &middot;
+                    <Link to={realm_path + "/terms"}>{__('Terms &amp; Conditions')}</Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          </footer>
+            </footer>
+          </div>
         </div>
       </div>
     </>

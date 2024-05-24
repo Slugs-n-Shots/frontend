@@ -103,8 +103,11 @@ const publicRoutes = [
         "component": "common/Privacy",
         "roles": ["auth", "unauth"]
     },
+    {
+        "path": "/home",
+        "component": "public/Home2",
+        "roles": ["auth", "unauth"]
+    },
 ]
-
-
 
 export default publicRoutes

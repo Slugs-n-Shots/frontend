@@ -171,7 +171,7 @@ const TopNav = () => {
           </ul>
           <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
             <li className="nav-item">
-              <Link className="nav-link" to="/admin/">
+              <Link className="nav-link" to={window.location.protocol + '//' + window.location.host + "/admin/"}>
                 (adm)
               </Link>
             </li>

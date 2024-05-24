@@ -7,7 +7,6 @@ import config from "models/config";
 
 const DrinkUnitsSnapIn = (props) => {
     const { __ } = useTranslation();
-    const formData = props.value;
     const units = props.value
     const objectId = props.objectId
     console.log('units', units)

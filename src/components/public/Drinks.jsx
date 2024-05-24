@@ -109,7 +109,7 @@ function DrinkCard(props) {
   const { __, formatNumber } = useTranslation();
 
   const handleAddToCart = (unit) => {
-    addToCart(props.drink.id, unit.quantity, unit.unit_code, 1, "add"); // Mindig csak 1 ital kerül a kosárba
+    addToCart(props.drink.id, unit.quantity, unit.unit_en, 1, "add"); // Mindig csak 1 ital kerül a kosárba
   };
 
   return (

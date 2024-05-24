@@ -147,7 +147,7 @@ const MyTasks = () => {
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity, 0)}</td>
                   <td className="text-end">{item.details.reduce((total, det) => total + det.ordered_quantity * det.drink_unit.unit_price, 0)} {config.currency}</td>
                   <td className="text-nowrap">
-                  <Button size="sm" variant="danger" className="me-sm-2" onClick={() => undoAssignOrder(item.id)}>{__('Undo assigments')}</Button>
+                  <Button size="sm" variant="danger" className="me-sm-2" onClick={() => undoAssignOrder(item.id)}>{__('Undo assignment')}</Button>
                   <Button size="sm" variant="success" onClick={() => markAsDone(item.id)}>{__('Mark as done')}</Button>
                     <Button variant="link"
                       className="waiting-order-details-collapse-button"

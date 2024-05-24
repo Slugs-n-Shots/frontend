@@ -15,12 +15,12 @@ const TopNav = () => {
     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
       <Link data-ek="brand" className="navbar-brand ps-3" to="/admin/">{__('Admin')}|{config.appName}</Link>
       <button className="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" onClick={() => { toggleConfig('sidebarOpened') }}><i className="fas fa-bars"></i></button>
-      <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+      {/* <form className="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div className="input-group">
           <input className="form-control" type="text" placeholder={__('Search for...')} aria-label={__('Search for...')} aria-describedby="btnNavbarSearch" />
           <button className="btn btn-primary" id="btnNavbarSearch" type="button"><i className="fas fa-search"></i></button>
         </div>
-      </form>
+      </form> */}
       <ToggleTheme className="text-end" />
       <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li className="nav-item dropdown">
@@ -46,7 +46,7 @@ const TopNav = () => {
         </li>
       </ul>
       {runMode() === 'DEV' && <ul className="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
-        <li className="nav-item"><Link className="nav-link" to="/">(pub)</Link></li>
+        <li className="nav-item"><Link className="nav-link" to={window.location.protocol + '//' + window.location.host}>(pub) </Link></li>
       </ul>}
     </nav>
   );

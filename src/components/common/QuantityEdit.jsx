@@ -7,7 +7,6 @@ const QuantityEdit = (props) => {
     const [text, setText] = useState(props?.value ?? '');
 
     useEffect(() => {
-        console.log('ue')
         setText(props?.value ?? '')
     }, [props.value])
 

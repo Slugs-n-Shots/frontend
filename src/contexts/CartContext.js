@@ -48,6 +48,7 @@ export const CartProvider = ({ children }) => {
       // empty cart
       setConfig(CART_KEY, null);
       setCartItems([]);
+      addMessage("success", "Thanks for your order! Our bartenders are on it.");
     } catch (error) {
       console.warn('makeOrder', error)
     }
@@ -88,7 +89,7 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = (drink_id, quantity, unit) => {
     quantity = Number(quantity);
-    const key = `${drink_id}|${quantity}|${unit ?? ""}`;
+    const key = `${drink_id}|${quantity}|${unit}`;
     const newCartItems = { ...cartItems };
     delete newCartItems[key];
     setCartItems(newCartItems);
@@ -123,7 +124,7 @@ export const CartProvider = ({ children }) => {
     if (drink) {
       const parsedQuantity = parseFloat(quantity);
       const selectedUnit = drink.units.find(
-        (u) => parseFloat(u.quantity) === parsedQuantity && u.unit_code === unit
+        (u) => parseFloat(u.quantity) === parsedQuantity && u.unit_en === unit
       );
       if (selectedUnit) {
         if (mode === "add" && quantityToAdd > 0) {
@@ -152,7 +153,7 @@ export const CartProvider = ({ children }) => {
           const drink = drinkList[drink_id];
           if (drink) {
             const selectedUnit = drink.units.find(
-              (u) => parseFloat(u.quantity) === quantity && u.unit_code === unit
+              (u) => parseFloat(u.quantity) === quantity && u.unit_en === unit
             );
             if (selectedUnit) {
               const unitPrice = Number(selectedUnit.unit_price);
@@ -174,7 +175,6 @@ export const CartProvider = ({ children }) => {
           }
         })
         .filter((item) => item !== null);
-      console.log("details", ret);
       return ret;
     }
     // ha nincs benne tétel üres tömb, ha még nincs inicializálva a bevásárlókocsi: undefined.
@@ -190,7 +190,7 @@ export const CartProvider = ({ children }) => {
       let unitPrice = NaN;
       if (drink) {
         const selectedUnit = drink.units.find(
-          (u) => parseFloat(u.quantity) === quantity && u.unit === unit
+          (u) => parseFloat(u.quantity) === quantity && u.unit_en === unit
         );
         if (selectedUnit) {
           unitPrice = selectedUnit.unit_price;
