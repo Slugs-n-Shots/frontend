@@ -8,9 +8,9 @@ const CartContext = createContext();
 const CART_KEY = "cart";
 
 export const CartProvider = ({ children }) => {
-  const [menu, setMenu] = useState([]);
+  const [menu, setMenu] = useState(null);
   const [loaded, setLoaded] = useState(false);
-  const [drinkList, setDrinkList] = useState([]);
+  const [drinkList, setDrinkList] = useState(null);
   const { get, post } = useApi();
   const { realm } = useConfig();
   const { addMessage } = useMessages();
@@ -41,16 +41,15 @@ export const CartProvider = ({ children }) => {
 
   const makeOrder = async () => {
     try {
-      const cart = Object.keys(cartItems).map((key, idx) => { return { ...(parseKey(key)), ordered_quantity: cartItems[key] } });
-      if (post === get) { }
-      post('/orders', { cart })
-      console.log(cart);
-      // empty cart
+      const cart = Object.keys(cartItems).map((key) => ({ ...(parseKey(key)), ordered_quantity: cartItems[key] }));
+      await post('/orders', { cart });
+      // empty cart only after successful order
       setConfig(CART_KEY, null);
       setCartItems([]);
       addMessage("success", "Thanks for your order! Our bartenders are on it.");
     } catch (error) {
-      console.warn('makeOrder', error)
+      console.warn('makeOrder', error);
+      addMessage("danger", "Unable to complete your order. Please try again.");
     }
   }
 
@@ -99,7 +98,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = (drink_id, quantity, unit, quantityToAdd, mode = "add") => {
     const cartItemsCopy = typeof cartItems === 'object' && cartItems !== null ? { ...cartItems } : {};
     quantity = Number(quantity);
-    console.log("addToCart", { drink_id, quantity, unit, quantityToAdd, mode });
+    // console.log("addToCart", { drink_id, quantity, unit, quantityToAdd, mode });
     const key = `${drink_id}|${quantity}|${unit ?? ""}`;
     const currentQuantity = cartItemsCopy[key] || 0;
     let newQuantity = quantityToAdd;
@@ -205,8 +204,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const drinkCount = () => {
-    console.log('drinkCount', cartItems, (typeof cartItems === 'object' && cartItems !== null))
-
+    // console.log('drinkCount', cartItems, (typeof cartItems === 'object' && cartItems !== null))
     return (typeof cartItems === 'object' && cartItems !== null) ? Object.entries(cartItems).reduce((total, [k, v]) => total + v, 0) : 0;
   }
 

@@ -160,6 +160,7 @@ const translations_hu = {
     'Add Unit': 'Mennyiség hozzáadása',
     'My Orders': 'Rendeléseim',
     'Thanks for your order! Our bartenders are on it.': 'Köszönjük a rendelést! A bárpultosaink már készítik is.',
+    'Unable to complete your order. Please try again.': 'Nem sikerült teljesíteni a rendelést. Kérlek, próbáld újra.',
     'My Open Tasks': 'Nyitott feladataim',
     'Undo assignment': 'Visszavonás',
     'Mark as done': 'Készre állít',

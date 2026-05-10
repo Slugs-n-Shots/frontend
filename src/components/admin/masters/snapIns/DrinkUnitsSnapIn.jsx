@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { TextField, SelectField, CurrencyField } from "../DataModal";
 import { drinkUnits } from "models/units";
-import { useTranslation } from "contexts/TranslationContext.js";
+import { useTranslation } from "contexts/TranslationContext";
 import { Col, Row, Button, Table } from "react-bootstrap";
 import config from "models/config";
 

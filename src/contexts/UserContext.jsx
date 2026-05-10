@@ -15,7 +15,7 @@ export const UserProvider = ({ children }) => {
     const USER_ROLES = {
         'waiter': 1,
         'bartender': 2,
-        'backoffice': 3,
+        'backoffice': 4,
         'admin': 7,
     }
 
@@ -27,15 +27,15 @@ export const UserProvider = ({ children }) => {
         cleanupConfig();
     };
 
-    const userIsLoggedIn = () => user !== null && user !== undefined && (user.id ?? false);
+    const userIsLoggedIn = () => user != null && user.id != null;
     const userIsStaffMember = () => userIsLoggedIn() && user.hasOwnProperty('role_code') && realm === 'staff';
 
     const userHasRole = (role) => userIsStaffMember()
         && (USER_ROLES[role] !== undefined)
         && (user.role_code & USER_ROLES[role]) === USER_ROLES[role];
 
-    // ha legalább az egyik jogoultsága megvan
-    const userHasRoles = (roles) => roles.reduce((total, current) => total || userHasRole(current), false)
+    // ha legalább az egyik jogosultsága megvan
+    const userHasRoles = (roles) => roles.some(userHasRole)
 
     return (
         <UserContext.Provider value={{

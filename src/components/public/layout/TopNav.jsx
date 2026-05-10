@@ -4,7 +4,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import { useUser } from "contexts/UserContext";
 // import { useConfig } from "contexts/ConfigContext";
 import config from "models/config";
-import { useCart } from "contexts/CartContext.js";
+import { useCart } from "contexts/CartContext";
 
 const TopNav = () => {
   const { __, language, languages, changeLanguage } = useTranslation();

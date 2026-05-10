@@ -5,6 +5,7 @@ import config from "models/config";
 import React, { Fragment, useEffect, useState } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 
+const snapInModules = import.meta.glob("./snapIns/*.{js,jsx}", { eager: true });
 
 const DataModal = ({ state }) => {
   const { model, fields, error, events } = useData()
@@ -283,9 +284,10 @@ const LongTextField = (props) => {
 
 const SnapInField = (props) => {
   const { component, ...childProps } = { ...props };
-  return (
-    React.createElement(require(`components/admin/masters/snapIns/${component}`).default, childProps)
-  )
+  const Component = snapInModules[`./snapIns/${component}.jsx`]?.default
+    ?? snapInModules[`./snapIns/${component}.js`]?.default;
+
+  return Component ? <Component {...childProps} /> : null;
 }
 
 export default DataModal;
