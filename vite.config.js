@@ -14,6 +14,26 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 3000,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          bootstrap: ["bootstrap", "react-bootstrap"],
+          mui: ["@mui/material", "@mui/icons-material", "@emotion/react", "@emotion/styled"],
+          markdown: ["react-markdown"],
+          data: ["axios", "react-data-table-component"],
+          icons: [
+            "@fortawesome/fontawesome-svg-core",
+            "@fortawesome/free-solid-svg-icons",
+            "@fortawesome/react-fontawesome",
+            "react-icons",
+            "flag-icons",
+          ],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       components: path.resolve(__dirname, "src/components"),

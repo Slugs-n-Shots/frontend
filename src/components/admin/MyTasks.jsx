@@ -7,7 +7,7 @@ import { Col, Row, Table, Button } from "react-bootstrap";
 
 const MyTasks = () => {
 
-  const [loaded, setLoaded] = useState(false);
+  const [refreshIndex, setRefreshIndex] = useState(0);
   const { get, post } = useApi();
   const [orders, setOrders] = useState([]);
   const { addMessage } = useMessages();
@@ -82,24 +82,21 @@ const MyTasks = () => {
   }
 
   useEffect(() => {
-    if (true || !loaded) {
-      get('orders/my-tasks')
-        .then(response => {
-          setOrders(response.data)
-          setLoaded(true)
-        })
-        .catch(error => {
-          console.warn(error);
-          addMessage("danger", error.statusText);
-        })
-    }
-  }, [addMessage, get, loaded, language])
+    get('orders/my-tasks')
+      .then(response => {
+        setOrders(response.data)
+      })
+      .catch(error => {
+        console.warn(error);
+        addMessage("danger", error.statusText);
+      })
+  }, [addMessage, get, language, refreshIndex])
 
   const markAsDone = (id) => {
     post('orders/done/' + Number(id))
       .then(response => {
         addMessage("success", "Order marked as done.", {}, { timeOut: 2000 });
-        setLoaded(false)
+        setRefreshIndex((current) => current + 1)
       })
       .catch(error => {
         console.warn(error);
@@ -111,7 +108,7 @@ const MyTasks = () => {
     post('orders/undo-assign/' + Number(id))
       .then(response => {
         addMessage("success", "Order assignment reverted", {}, { timeOut: 2000 });
-        setLoaded(false)
+        setRefreshIndex((current) => current + 1)
       })
       .catch(error => {
         console.warn(error);

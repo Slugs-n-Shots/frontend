@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useEffect, useMemo, useContext } from 'react';
 import axios from 'axios';
 import { useConfig } from 'contexts/ConfigContext';
 import { useTranslation } from 'contexts/TranslationContext';
@@ -16,98 +16,88 @@ export const ApiProvider = ({ children }) => {
   // console.log('realm', realm)
   const baseUrl = getConfig('serverURL');
 
-  const api = axios.create({
+  const api = useMemo(() => axios.create({
     baseURL: baseUrl
-  });
+  }), [baseUrl]);
 
-  // Axios request interceptor for token renewal
-  api.interceptors.request.use(
-    async (_config) => {
-      // Here you would fetch and attach the token from storage or state
-      const token = getConfig(CONFIG_KEY_TOKEN)
-      _config.params = { ..._config.params, lang: language }
-      _config.baseURL = baseUrl;
-      _config.headers.setContentType('application/json', true)
-      if (token) {
-        _config.headers.Authorization = `Bearer ${token}`;
-      }
-      return _config;
-    },
-    (error) => Promise.reject(error)
-  );
-
-  // Axios response interceptor to handle token expiration
-  api.interceptors.response.use(
-    async response => {
-      const token = response.data?.access_token;
-      if (token) {
-        // console.log('token #1', token)
-        setConfig(CONFIG_KEY_TOKEN, token);
-      }
-      return response
-    },
-    async (error) => {
-      if (axios.isAxiosError(error)) {
-        console.log('AxiosError', error)
-        switch (error.code) {
-          case 'ERR_NETWORK':
-            error.statusText = error.message
-            error.statusCode = 0
-            console.log('AxiosError', 'NETWORK ERROR')
-            break;
-          case 'ERR_BAD_REQUEST':
-            console.log(error.response.data);
-
-            error.statusText = error.response.data.message
-            error.statusCode = '*'+error.request.status
-            console.log('AxiosError', 'Bad request')
-            break;
-          default: break;
-        }
-        const originalRequest = error.config;
+  useEffect(() => {
+    const requestInterceptor = api.interceptors.request.use(
+      async (_config) => {
         const token = getConfig(CONFIG_KEY_TOKEN)
+        _config.params = { ..._config.params, lang: language }
+        _config.baseURL = baseUrl;
+        _config.headers.setContentType('application/json', true)
+        if (token) {
+          _config.headers.Authorization = `Bearer ${token}`;
+        }
+        return _config;
+      },
+      (error) => Promise.reject(error)
+    );
 
-        if (error.code === 'ERR_BAD_REQUEST' && error.response.status === 401 && !originalRequest._retry && token) {
-          // Handle token renewal here, e.g., fetch a new token and set it
-          originalRequest._retry = true;
-          try {
-            // Attempt to refresh the token
-            // console.log("Érvénytelen token, frissíjük ", `${baseUrl}refresh`)
-            // console.log("lejárt token", token)
-            const response = await axios.get(`${baseUrl}refresh`, {
-              headers: {
-                'Authorization': `Bearer ${token}`
+    const responseInterceptor = api.interceptors.response.use(
+      async response => {
+        const token = response.data?.access_token;
+        if (token) {
+          setConfig(CONFIG_KEY_TOKEN, token);
+        }
+        return response
+      },
+      async (error) => {
+        if (axios.isAxiosError(error)) {
+          switch (error.code) {
+            case 'ERR_NETWORK':
+              error.statusText = error.message
+              error.statusCode = 0
+              break;
+            case 'ERR_BAD_REQUEST':
+              error.statusText = error.response?.data?.message
+              error.statusCode = '*' + error.request?.status
+              break;
+            default: break;
+          }
+          const originalRequest = error.config;
+          const token = getConfig(CONFIG_KEY_TOKEN)
+
+          if (error.code === 'ERR_BAD_REQUEST' && error.response?.status === 401 && originalRequest && !originalRequest._retry && token) {
+            originalRequest._retry = true;
+            try {
+              const response = await axios.get(`${baseUrl}refresh`, {
+                headers: {
+                  'Authorization': `Bearer ${token}`
+                }
+              })
+              if (response.status === 200) {
+                const token = response.data?.access_token;
+                setConfig(CONFIG_KEY_TOKEN, token);
+                originalRequest.headers = originalRequest.headers ?? {};
+                originalRequest.headers.Authorization = `Bearer ${token}`;
+                return api(originalRequest);
+              } else {
+                setConfig(CONFIG_KEY_TOKEN, null)
               }
-            })
-            if (response.status === 200) {
-              // Store new token and update the original request
-              const token = response.data?.access_token;
-              // console.log('token #2', token)
-              setConfig(CONFIG_KEY_TOKEN, token);
-              axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-              return api(originalRequest);
-            } else {
-              setConfig(CONFIG_KEY_TOKEN, null)
+            } catch (e) {
+              console.warn('Refresh token invalid', e);
             }
-          } catch (e) {
-            console.warn('Refresh token invalid', e);
-            // Handle the case where the refresh token is also invalid (e.g., logout the user)
           }
         }
-      } else {
-        console.log('Other Axios Error', error)
+
+        return Promise.reject(error);
       }
+    );
 
-      return Promise.reject(error);
-    }
-  );
+    return () => {
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
+    };
+  }, [api, baseUrl, getConfig, language, setConfig]);
 
-  const contextValue = {
+  const contextValue = useMemo(() => ({
     get: (url, config = {}) => api.get(url, config),
     post: (url, data, config = {}) => api.post(url, data, config),
     put: (url, data, config = {}) => api.put(url, data, config),
     deleteX: (url, config = {}) => api.delete(url, config),
-  };
+  }), [api]);
 
   return <ApiContext.Provider value={contextValue}>{children}</ApiContext.Provider>;
 };

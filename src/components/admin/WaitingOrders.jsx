@@ -7,7 +7,7 @@ import { Col, Row, Table, Button } from "react-bootstrap";
 
 const WaitingOrders = () => {
 
-  const [loaded, setLoaded] = useState(false);
+  const [refreshIndex, setRefreshIndex] = useState(0);
   const { get, post } = useApi();
   const [orders, setOrders] = useState([]);
   const { addMessage } = useMessages();
@@ -82,24 +82,21 @@ const WaitingOrders = () => {
   }
 
   useEffect(() => {
-    if (true || !loaded) {
-      get('orders/waiting')
-        .then(response => {
-          setOrders(response.data)
-          setLoaded(true)
-        })
-        .catch(error => {
-          console.warn(error);
-          addMessage("danger", error.statusText);
-        })
-    }
-  }, [addMessage, get, loaded, language])
+    get('orders/waiting')
+      .then(response => {
+        setOrders(response.data)
+      })
+      .catch(error => {
+        console.warn(error);
+        addMessage("danger", error.statusText);
+      })
+  }, [addMessage, get, language, refreshIndex])
 
   const assignOrder = (id) => {
     post('orders/assign/' + Number(id))
     .then(response => {
       addMessage("success", "Order assigned to you", {}, {timeOut: 2000});
-      setLoaded(false)
+      setRefreshIndex((current) => current + 1)
     })
     .catch(error => {
       console.warn(error);
