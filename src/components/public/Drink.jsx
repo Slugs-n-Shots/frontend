@@ -10,13 +10,13 @@ export default function Drink({ match }) {
   const { get } = useApi();
   const { addMessage } = useMessages();
   const [drink, setDrink] = useState(null)
-  const { __ } = useTranslation()
+  const { __, language } = useTranslation()
   const { realm } = useConfig()
 
 
   useEffect(() => {
     if (realm) {
-      get(`drinks/${id}`)
+      get(`drinks/${id}`, { params: { lang: language } })
         .then((response) => {
           const drink = response.data //.user;
           // console.log('drink:', drink);
@@ -30,7 +30,7 @@ export default function Drink({ match }) {
           addMessage("danger", error.response.data.error);
         });
     }
-  }, [get, id, realm, addMessage])
+  }, [get, id, realm, addMessage, language])
 
   if (!drink) {
     return <div>{__('Please wait')}</div>;
