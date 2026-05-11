@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useConfig } from "./ConfigContext";
 import { useApi } from "./ApiContext";
 import { useMessages } from "./MessagesContext";
+import { useTranslation } from "./TranslationContext";
 
 const CartContext = createContext();
 
@@ -10,8 +11,10 @@ const CART_KEY = "cart";
 export const CartProvider = ({ children }) => {
   const [menu, setMenu] = useState(null);
   const [loaded, setLoaded] = useState(false);
+  const [loadedLanguage, setLoadedLanguage] = useState(null);
   const [drinkList, setDrinkList] = useState(null);
   const { get, post } = useApi();
+  const { language } = useTranslation();
   const { realm } = useConfig();
   const { addMessage } = useMessages();
   const { getConfig, setConfig } = useConfig();
@@ -23,21 +26,26 @@ export const CartProvider = ({ children }) => {
     }
   }, [getConfig, realm]);
 
-  const loadDrinks = async () => {
-    if (!loaded && realm) {
+  const loadDrinks = useCallback(async () => {
+    if ((!loaded || loadedLanguage !== language) && realm) {
       try {
-        const response = await get("menu-tree");
+        const response = await get("menu-tree", { params: { lang: language } });
         const drinks = response.data;
         const drinkList = updateDrinkList(drinks);
         setMenu(drinks);
         setDrinkList(drinkList);
         setLoaded(true);
+        setLoadedLanguage(language);
       } catch (error) {
         addMessage("danger", error.statusText);
         console.warn(error);
       }
     }
-  };
+  }, [addMessage, get, language, loaded, loadedLanguage, realm]);
+
+  useEffect(() => {
+    loadDrinks();
+  }, [loadDrinks]);
 
   const makeOrder = async () => {
     try {
@@ -77,12 +85,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const getMenu = () => {
-    loadDrinks();
     return menu;
   };
 
   const getDrinkList = () => {
-    loadDrinks();
     return drinkList;
   };
 

@@ -41,9 +41,8 @@ export const TranslationProvider = ({ children }) => {
 
     function formatNumber(num, lang = language) {
         const locale = languages[lang]?.locale ?? languages[defaultLanguage].locale
-        return num.toLocaleString(locale)
+        return parseFloat(num).toLocaleString(locale);
     }
-
 
     function __(text, replace = {}, lang = language) {
         if (lang !== "en") {
@@ -51,12 +50,10 @@ export const TranslationProvider = ({ children }) => {
             if (!translations[lang][text]) {
                 const existing = localStorage.getItem("missing_translations")
                 let missing = existing ? JSON.parse(existing) : [];
-                // fs.appendFile("./logs/error_log.txt", text);
                 if (!missing.includes(text)) {
                     missing.push(text);
                     localStorage.setItem("missing_translations", JSON.stringify(missing))
                 }
-                // console.warn(`No translation for: "${text}"`)
             }
         }
         if (replace) {
