@@ -34,12 +34,16 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.0.11"
+    "jsdom": "^29.1.1",
+    "vite": "^8.0.11",
+    "vitest": "^4.1.6"
   },
   "scripts": {
     "postinstall": "node scripts/init-env.mjs",
     "dev": "vite",
     "start": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build": "vite build",
     "preview": "vite preview"
   },
