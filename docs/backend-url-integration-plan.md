@@ -77,7 +77,7 @@ Ellenőrzés:
 
 ### 1. fázis: Profil, compliance, GDPR
 
-Scope:
+Hatókör:
 - guest profiladatok megjelenítésének frissítése
 - profilkép feltöltés/törlés
 - GDPR anonimizálási előellenőrzés és anonimizálási folyamat
@@ -121,7 +121,7 @@ Hasznos tesztek:
 
 ### 2. fázis: Rendelésleadási fizetési mód
 
-Scope:
+Hatókör:
 - rendelésleadási mód hozzáadása a kosárhoz
 - személyenkénti fogyasztási limit konfliktus kezelése
 - pay-now út előkészítése anélkül, hogy nem megerősített backend működést találnánk ki
@@ -152,7 +152,7 @@ Hasznos tesztek:
 
 ### 3. fázis: Guest asztalélmény
 
-Scope:
+Hatókör:
 - szabad asztalok listája
 - asztal foglalása vagy csatlakozás GUID/QR érték alapján
 - aktuális asztal nézet
@@ -202,7 +202,7 @@ Hasznos tesztek:
 
 ### 4. fázis: Guest fizetések és nyugták
 
-Scope:
+Hatókör:
 - saját pending order detail kiválasztás
 - asztal pending detail kiválasztás
 - záró fizetés minden fennmaradó tételre
@@ -241,7 +241,7 @@ Hasznos tesztek:
 
 ### 5. fázis: Staff/admin asztalok, rendelések, fizetettnek jelölés
 
-Scope:
+Hatókör:
 - admin asztal CRUD
 - GUID regenerálás
 - staff fogyasztási limit override
@@ -277,7 +277,7 @@ Hasznos tesztek:
 
 ### 6. fázis: Riportok
 
-Scope:
+Hatókör:
 - riportlista
 - szűrők
 - queue státusz megjelenítés
@@ -329,7 +329,7 @@ Kezdés: 0. és 1. fázis.
 5. Adat export hozzáadása.
 6. Fókuszált tesztek a profil/GDPR viselkedésekre.
 
-Ez a szelet önmagában is értékes, nem igényel fizetési UI döntéseket, és korlátozott hatókörrel használja az új/megchanged guest URL-eket.
+Ez a szelet önmagában is értékes, nem igényel fizetési UI döntéseket, és korlátozott hatókörrel használja az új vagy megváltozott guest URL-eket.
 
 ## Ellenőrzési parancsok
 
@@ -341,4 +341,4 @@ docker compose exec -T node npm run test
 docker compose exec -T node npm run build
 ```
 
-Nagyobb route, API vagy context változtatások merge előtt fusson production build.
+Nagyobb route, API vagy context változtatások merge előtt fusson production build ellenőrzés.
