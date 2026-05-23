@@ -82,14 +82,18 @@ const MyTasks = () => {
   }
 
   useEffect(() => {
-    get('orders/my-tasks')
+    const controller = new AbortController();
+    get('orders/my-tasks', { signal: controller.signal })
       .then(response => {
         setOrders(response.data)
       })
       .catch(error => {
-        console.warn(error);
-        addMessage("danger", error.statusText);
+        if (error.code !== 'ERR_CANCELED') {
+          console.warn(error);
+          addMessage("danger", error.statusText);
+        }
       })
+    return () => controller.abort();
   }, [addMessage, get, language, refreshIndex])
 
   const markAsDone = (id) => {

@@ -7,9 +7,8 @@ import config from "models/config";
 
 const DrinkUnitsSnapIn = (props) => {
     const { __ } = useTranslation();
-    const units = props.value
+    const units = props.value ?? []
     const objectId = props.objectId
-    console.log('units', units)
 
     const setUnits = (units) => {
         if (props.onFieldChange !== undefined) {
@@ -18,7 +17,7 @@ const DrinkUnitsSnapIn = (props) => {
     }
 
     const handleAdd = () => {
-        setUnits([...units, {
+        setUnits([...(units ?? []), {
             id: null,
             drink_id: objectId,
             quantity: 1,
@@ -30,7 +29,7 @@ const DrinkUnitsSnapIn = (props) => {
 
     const handleChange = (event, field, idx, newValue) => {
         const newUnits = [...units];
-        newUnits[idx][field] = newValue
+        newUnits[idx] = { ...newUnits[idx], [field]: newValue };
         if (field === 'unit') {
             newUnits[idx]['unit_en'] = newValue;
             newUnits[idx]['unit_hu'] = __(newValue, [], 'hu');
@@ -40,13 +39,14 @@ const DrinkUnitsSnapIn = (props) => {
 
     const handleDelete = (unit) => {
         setUnits(units.filter(u =>
-            unit.id === u.id &&
-            unit.drink_id === u.drink_id &&
-            unit.quantity === u.quantity &&
-            unit.unit_en === u.unit_en
+            !(
+                unit.id === u.id &&
+                unit.drink_id === u.drink_id &&
+                unit.quantity === u.quantity &&
+                unit.unit_en === u.unit_en
+            )
         ));
     }
-    console.log('units before render', units)
     return (
         <>
             <h3>{__('Units')}</h3>
@@ -95,11 +95,11 @@ const DrinkUnit = ({ idx, unit, handleChange, handleDelete }) => {
                     name={`units-${idx}-quantity`} />
             </td>
             <td style={{ minWidth: "8rem" }}>
-                <SelectField
-                    options={drinkUnits}
-                    onChange={(event) => handleChange(event, 'unit', idx, event.target.value)}
-                    value={unit.unit || ""}
-                    name={`units-${idx}-unit`} />
+                    <SelectField
+                        options={drinkUnits}
+                        onChange={(event) => handleChange(event, 'unit', idx, event.target.value)}
+                        value={unit.unit_en || ""}
+                        name={`units-${idx}-unit`} />
             </td>
             <td>
                 <CurrencyField

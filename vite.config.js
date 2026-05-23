@@ -17,19 +17,34 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ["react", "react-dom", "react-router-dom"],
-          bootstrap: ["bootstrap", "react-bootstrap"],
-          mui: ["@mui/material", "@mui/icons-material", "@emotion/react", "@emotion/styled"],
-          markdown: ["react-markdown"],
-          data: ["axios", "react-data-table-component"],
-          icons: [
-            "@fortawesome/fontawesome-svg-core",
-            "@fortawesome/free-solid-svg-icons",
-            "@fortawesome/react-fontawesome",
-            "react-icons",
-            "flag-icons",
-          ],
+        manualChunks(id) {
+          if (!id.includes("node_modules")) {
+            return;
+          }
+
+          if (/(node_modules\/)(react|react-dom|react-router-dom)\//.test(id)) {
+            return "react";
+          }
+
+          if (/(node_modules\/)(bootstrap|react-bootstrap)\//.test(id)) {
+            return "bootstrap";
+          }
+
+          if (/(node_modules\/)(@mui|@emotion)\//.test(id)) {
+            return "mui";
+          }
+
+          if (id.includes("node_modules/react-markdown/")) {
+            return "markdown";
+          }
+
+          if (/(node_modules\/)(axios|react-data-table-component)\//.test(id)) {
+            return "data";
+          }
+
+          if (/(node_modules\/)(@fortawesome|react-icons|flag-icons)\//.test(id)) {
+            return "icons";
+          }
         },
       },
     },

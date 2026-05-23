@@ -13,7 +13,11 @@ import NoPage from "components/common/NoPage";
 import adminRoutes from "routes/adminRoutes";
 import publicRoutes from "routes/publicRoutes";
 
-const componentModules = import.meta.glob("./components/**/*.{js,jsx}", { eager: true });
+const componentModules = import.meta.glob([
+  "./components/**/*.{js,jsx}",
+  "!./components/**/*.test.{js,jsx}",
+  "!./components/**/*.spec.{js,jsx}",
+], { eager: true });
 
 function getRouteComponent(component) {
   return componentModules[`./components/${component}.jsx`]?.default

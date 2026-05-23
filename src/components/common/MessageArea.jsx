@@ -36,14 +36,15 @@ const MessageArea = () => {
 
 const TimedAlert = (props) => {
 
-  const [show, setShow] = useState(props.show);
+  const [show, setShow] = useState(props.show ?? true);
   const {timeOut, ...alertProps} = { ...props, show }
 
   useEffect(() => {
     if (timeOut !== undefined) {
-      window.setTimeout(() => { setShow(false); }, timeOut)
+      const timer = window.setTimeout(() => { setShow(false); }, timeOut)
+      return () => window.clearTimeout(timer);
     }
-  })
+  }, [timeOut])
 
   return (
     <Alert {...alertProps} >{props.children}</Alert>

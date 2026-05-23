@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useConfig } from "./ConfigContext";
 import { useApi } from "./ApiContext";
 import { useMessages } from "./MessagesContext";
@@ -18,18 +18,23 @@ export const CartProvider = ({ children }) => {
   const { realm } = useConfig();
   const { addMessage } = useMessages();
   const { getConfig, setConfig } = useConfig();
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState({});
+  const cartItemsRef = useRef(cartItems);
 
   useEffect(() => {
     if (realm !== null) {
-      setCartItems(getConfig(CART_KEY));
+      setCartItems(getConfig(CART_KEY, {}) ?? {});
     }
   }, [getConfig, realm]);
 
-  const loadDrinks = useCallback(async () => {
+  useEffect(() => {
+    cartItemsRef.current = cartItems;
+  }, [cartItems]);
+
+  const loadDrinks = useCallback(async (signal) => {
     if ((!loaded || loadedLanguage !== language) && realm) {
       try {
-        const response = await get("menu-tree", { params: { lang: language } });
+        const response = await get("menu-tree", { params: { lang: language }, signal });
         const drinks = response.data;
         const drinkList = updateDrinkList(drinks);
         setMenu(drinks);
@@ -37,23 +42,26 @@ export const CartProvider = ({ children }) => {
         setLoaded(true);
         setLoadedLanguage(language);
       } catch (error) {
-        addMessage("danger", error.statusText);
-        console.warn(error);
+        if (error.code !== 'ERR_CANCELED') {
+          addMessage("danger", error.statusText);
+        }
       }
     }
   }, [addMessage, get, language, loaded, loadedLanguage, realm]);
 
   useEffect(() => {
-    loadDrinks();
+    const controller = new AbortController();
+    loadDrinks(controller.signal);
+    return () => controller.abort();
   }, [loadDrinks]);
 
   const makeOrder = async () => {
     try {
-      const cart = Object.keys(cartItems).map((key) => ({ ...(parseKey(key)), ordered_quantity: cartItems[key] }));
+      const cart = Object.keys(cartItems ?? {}).map((key) => ({ ...(parseKey(key)), ordered_quantity: cartItems[key] }));
       await post('/orders', { cart });
       // empty cart only after successful order
       setConfig(CART_KEY, null);
-      setCartItems([]);
+      setCartItems({});
       addMessage("success", "Thanks for your order! Our bartenders are on it.");
     } catch (error) {
       console.warn('makeOrder', error);
@@ -94,18 +102,20 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = (drink_id, quantity, unit) => {
     quantity = Number(quantity);
-    const key = `${drink_id}|${quantity}|${unit}`;
-    const newCartItems = { ...cartItems };
+    const key = `${drink_id}|${quantity}|${unit ?? ""}`;
+    const newCartItems = { ...(cartItemsRef.current ?? {}) };
     delete newCartItems[key];
+    cartItemsRef.current = newCartItems;
     setCartItems(newCartItems);
     setConfig(CART_KEY, newCartItems);
   };
 
   const addToCart = (drink_id, quantity, unit, quantityToAdd, mode = "add") => {
-    const cartItemsCopy = typeof cartItems === 'object' && cartItems !== null ? { ...cartItems } : {};
     quantity = Number(quantity);
-    // console.log("addToCart", { drink_id, quantity, unit, quantityToAdd, mode });
     const key = `${drink_id}|${quantity}|${unit ?? ""}`;
+    const cartItemsCopy = typeof cartItemsRef.current === 'object' && cartItemsRef.current !== null
+      ? { ...cartItemsRef.current }
+      : {};
     const currentQuantity = cartItemsCopy[key] || 0;
     let newQuantity = quantityToAdd;
     if (mode === "add") {
@@ -122,10 +132,11 @@ export const CartProvider = ({ children }) => {
       delete cartItemsCopy[key];
     }
 
+    cartItemsRef.current = cartItemsCopy;
     setCartItems(cartItemsCopy);
     setConfig(CART_KEY, cartItemsCopy);
 
-    const drink = drinkList[drink_id];
+    const drink = drinkList?.[drink_id];
     if (drink) {
       const parsedQuantity = parseFloat(quantity);
       const selectedUnit = drink.units.find(
@@ -151,6 +162,9 @@ export const CartProvider = ({ children }) => {
 
   const detailedCartItems = () => {
     const drinkList = getDrinkList();
+    if (typeof drinkList !== 'object' || drinkList === null) {
+      return undefined;
+    }
     if (typeof cartItems === 'object' && cartItems !== null) {
       const ret = Object.entries(cartItems)
         .map(([key, orderedQuantity]) => {
@@ -183,12 +197,15 @@ export const CartProvider = ({ children }) => {
       return ret;
     }
     // ha nincs benne tétel üres tömb, ha még nincs inicializálva a bevásárlókocsi: undefined.
-    return (typeof drinkList === 'object' && drinkList !== null) ? [] : undefined;
+    return [];
   };
 
   const calculateCartTotal = () => {
+    if (typeof drinkList !== 'object' || drinkList === null) {
+      return 0;
+    }
     let grandTotal = 0;
-    Object.entries(cartItems).forEach(([key, value]) => {
+    Object.entries(cartItems ?? {}).forEach(([key, value]) => {
       const { drink_id, quantity, unit } = parseKey(key);
       const drink = drinkList[drink_id];
       // console.log(drink, key);

@@ -15,11 +15,23 @@ const AdminPageLayout = () => {
 
   useEffect(() => {
     applyStaffRealm();
-  });
+  }, [applyStaffRealm]);
+
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = '/assets/css/adm.css';
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.dataset.layoutStyle = 'admin';
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
 
   return (
     <>
-      <link rel="stylesheet" type="text/css" href="/assets/css/adm.css" />
       <TopNav />
       <div id="layoutSidenav">
         <div id="layoutSidenav_nav">

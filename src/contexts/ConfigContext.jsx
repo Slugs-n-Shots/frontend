@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import config from "../models/config";
 
 const ConfigContext = createContext();
@@ -11,9 +11,16 @@ const REALM_PATHS = {
     'staff': '/admin'
 };
 
+const detectInitialRealm = () => {
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+        return 'staff';
+    }
+    return 'guest';
+};
+
 export const ConfigProvider = ({ children }) => {
 
-    const [realm, setRealm] = useState(null);
+    const [realm, setRealm] = useState(detectInitialRealm);
 
     const configKey = CONFIG_KEYS[realm] ?? '';
 
@@ -33,17 +40,17 @@ export const ConfigProvider = ({ children }) => {
 
     // console.log('items', items)
 
-    const applyStaffRealm = () => {
+    const applyStaffRealm = useCallback(() => {
         // console.log('applyRealm', 'staff')
         setRealm('staff')
-    }
+    }, [])
 
-    const applyGuestRealm = () => {
+    const applyGuestRealm = useCallback(() => {
         // console.log('applyRealm', 'guest')
         setRealm('guest')
-    }
+    }, [])
 
-    const getConfig = (key, defaultValue = null) => {
+    const getConfig = useCallback((key, defaultValue = null) => {
         const ret = (realm ? (items.hasOwnProperty(realm) ? (items[realm][key] ?? null) : null) : null)
             ?? (realm ? (config.hasOwnProperty(realm) ? (config[realm][key] ?? null) : null) : null)
             ?? defaultValue;
@@ -54,28 +61,23 @@ export const ConfigProvider = ({ children }) => {
             //     console.log('getConfig', realm, key, ret)
         }
         return ret;
-    }
+    }, [items, realm])
 
-    const setConfig = (key, newValue) => {
+    const setConfig = useCallback((key, newValue) => {
         setItems((prevItems) => {
             const newItems = { ...prevItems }
             if (realm) {
-                if (!newItems.hasOwnProperty(realm)) {
-                    if (newValue !== null) {
-                        newItems[realm] = { [key]: newValue };
-                    }
+                const realmItems = { ...(newItems[realm] ?? {}) };
+                if (newValue !== null) {
+                    realmItems[key] = newValue;
                 } else {
-                    if (newValue !== null) {
-                        newItems[realm][key] = newValue;
-
-                    } else {
-                        delete newItems[realm][key];
-                    }
+                    delete realmItems[key];
                 }
+                newItems[realm] = realmItems;
             }
             return newItems;
         });
-    }
+    }, [realm])
 
     useEffect(() => {
         // console.log('saving to localStorage', items);
@@ -92,27 +94,40 @@ export const ConfigProvider = ({ children }) => {
         });
     }, [configKey, items]);
 
-    const toggleConfig = (key) => {
+    const toggleConfig = useCallback((key) => {
         const value = !getConfig(key)
         // console.log('toggle', key, value);
         setConfig(key, value);
-    }
+    }, [getConfig, setConfig])
 
-    const cleanupConfig = () => {
-        let newItems = { ...items }
-        delete newItems[realm]
-        // console.log('cleanup #3', newItems)
-        setItems(newItems);
+    const cleanupConfig = useCallback(() => {
+        setItems((prevItems) => {
+            let newItems = { ...prevItems }
+            delete newItems[realm]
+            return newItems;
+        });
         // console.log('cleanup', realm, configKey)
-    }
+    }, [realm])
 
-    const runMode = () => {
+    const runMode = useCallback(() => {
         return 'DEV';
-    }
+    }, [])
 
     const realm_path = REALM_PATHS[realm] ?? undefined;
+    const contextValue = useMemo(() => ({
+        getConfig,
+        setConfig,
+        toggleConfig,
+        cleanupConfig,
+        realm,
+        realm_path,
+        applyStaffRealm,
+        applyGuestRealm,
+        runMode
+    }), [applyGuestRealm, applyStaffRealm, cleanupConfig, getConfig, realm, realm_path, runMode, setConfig, toggleConfig]);
+
     return (
-        <ConfigContext.Provider value={{ getConfig, setConfig, toggleConfig, cleanupConfig, realm, realm_path, applyStaffRealm, applyGuestRealm, runMode }}>
+        <ConfigContext.Provider value={contextValue}>
             {children}
         </ConfigContext.Provider>
     );

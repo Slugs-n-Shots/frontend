@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useMemo, useContext } from 'react';
+import React, { createContext, useEffect, useMemo, useContext, useRef } from 'react';
 import axios from 'axios';
 import { useConfig } from 'contexts/ConfigContext';
 import { useTranslation } from 'contexts/TranslationContext';
@@ -7,12 +7,20 @@ const CONFIG_KEY_TOKEN = 'token';
 
 const ApiContext = createContext();
 
+const getErrorMessage = (error) => {
+  return error.response?.data?.message
+    ?? error.response?.data?.error
+    ?? error.response?.statusText
+    ?? error.message;
+};
+
 export const useApi = () => useContext(ApiContext);
 
 export const ApiProvider = ({ children }) => {
 
   const { language } = useTranslation();
   const { getConfig, setConfig } = useConfig();
+  const refreshPromiseRef = useRef(null);
   // console.log('realm', realm)
   const baseUrl = getConfig('serverURL');
 
@@ -51,7 +59,8 @@ export const ApiProvider = ({ children }) => {
               error.statusCode = 0
               break;
             case 'ERR_BAD_REQUEST':
-              error.statusText = error.response?.data?.message
+            case 'ERR_BAD_RESPONSE':
+              error.statusText = getErrorMessage(error)
               error.statusCode = '*' + error.request?.status
               break;
             default: break;
@@ -62,11 +71,16 @@ export const ApiProvider = ({ children }) => {
           if (error.code === 'ERR_BAD_REQUEST' && error.response?.status === 401 && originalRequest && !originalRequest._retry && token) {
             originalRequest._retry = true;
             try {
-              const response = await axios.get(`${baseUrl}refresh`, {
-                headers: {
-                  'Authorization': `Bearer ${token}`
-                }
-              })
+              if (!refreshPromiseRef.current) {
+                refreshPromiseRef.current = axios.get(`${baseUrl}refresh`, {
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
+                }).finally(() => {
+                  refreshPromiseRef.current = null;
+                });
+              }
+              const response = await refreshPromiseRef.current;
               if (response.status === 200) {
                 const token = response.data?.access_token;
                 setConfig(CONFIG_KEY_TOKEN, token);
@@ -78,6 +92,7 @@ export const ApiProvider = ({ children }) => {
               }
             } catch (e) {
               console.warn('Refresh token invalid', e);
+              setConfig(CONFIG_KEY_TOKEN, null)
             }
           }
         }

@@ -8,14 +8,18 @@ const MarkdownViewer = ({ file }) => {
     const [markdown, setMarkdown] = useState("");
 
     useEffect(() => {
-        axios.get(`/assets/md/${language}/${file}`)
+        const controller = new AbortController();
+        axios.get(`/assets/md/${language}/${file}`, { signal: controller.signal })
             .then((response) => {
                 setMarkdown(response.data)
             })
             .catch(error => {
-                console.error(error)
+                if (error.code !== 'ERR_CANCELED') {
+                    console.error(error)
+                }
             })
-    });
+        return () => controller.abort();
+    }, [file, language]);
     return (
         <Markdown>{markdown}</Markdown>
     );

@@ -16,19 +16,24 @@ export default function Drink({ match }) {
 
   useEffect(() => {
     if (realm) {
-      get(`drinks/${id}`, { params: { lang: language } })
+      const controller = new AbortController();
+      get(`drinks/${id}`, { params: { lang: language }, signal: controller.signal })
         .then((response) => {
           const drink = response.data //.user;
           // console.log('drink:', drink);
           setDrink(drink);
         })
         .catch((error) => {
+          if (error.code === 'ERR_CANCELED') {
+            return;
+          }
           //setDrink(null);
-          console.log(error.response.data);
+          console.log(error.response?.data);
           // error.response.status == 401
           console.warn(error)
-          addMessage("danger", error.response.data.error);
+          addMessage("danger", error.response?.data?.error ?? error.statusText);
         });
+      return () => controller.abort();
     }
   }, [get, id, realm, addMessage, language])
 
@@ -37,13 +42,11 @@ export default function Drink({ match }) {
   }
   // console.log('drink', drink)
   return (
-    (!drink === null) ? <div>Nem nyert</div>
-      :
-      <div>
-        <h2>Drink Details</h2>
-        <h3>#{id} {drink.name}</h3>
-        <p>Description: {drink.description}</p>
-        {/* <p>Price: ${drink.units[0].unit_price.toFixed(2)}</p> */}
-        {/* Add more details as needed */}
-      </div>);
+    <div>
+      <h2>Drink Details</h2>
+      <h3>#{id} {drink.name}</h3>
+      <p>Description: {drink.description}</p>
+      {/* <p>Price: ${drink.units[0].unit_price.toFixed(2)}</p> */}
+      {/* Add more details as needed */}
+    </div>);
 }

@@ -9,23 +9,24 @@ const PublicPageLayout = () => {
 
   useEffect(() => {
     applyGuestRealm()
+  }, [applyGuestRealm]);
 
-    // const link = document.createElement('link');
-    // link.href = '/assets/css/bootstrap.min.css';
-    // link.type = 'text/css';
-    // link.rel = 'stylesheet';
-
-    // document.head.appendChild(link);
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = '/assets/css/pub.css';
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.dataset.layoutStyle = 'public';
+    document.head.appendChild(link);
 
     return () => {
-      // document.head.removeChild(link);
+      document.head.removeChild(link);
     };
-  });
+  }, []);
 
 
   return (
     <>
-      <link rel="stylesheet" type="text/css" href="/assets/css/pub.css" />
       <CartProvider>
         <TopNav />
         <ContentArea />

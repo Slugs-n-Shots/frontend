@@ -17,7 +17,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 // </> React.StrictMode
 root.render(
   <ConfigProvider>
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <TranslationProvider>
         <ApiProvider>
           <UserProvider>

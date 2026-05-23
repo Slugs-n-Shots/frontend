@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import shortid from 'shortid';
 
 const MessagesContext = createContext();
@@ -7,7 +7,7 @@ export const MessagesProvider = ({ children }) => {
 
     const [messages, setMessages] = useState({});
 
-    const addMessage = (type, message, args = {}, options = {}) => {
+    const addMessage = useCallback((type, message, args = {}, options = {}) => {
 
         // típusok: primary,secondary,success,danger,warning,info,light,dark
         // ha más néven akarsz használni kategóriákat, itt adhatsz meg behelyettesítéseket.
@@ -21,16 +21,20 @@ export const MessagesProvider = ({ children }) => {
         setMessages((prevItems) => {
             return { ...prevItems, [guid]: { type, message, args, options } };
         });
-    };
+    }, []);
 
-    const removeMessage = (key) => {
-        const copy = { ...messages };
-        delete copy[key];
-        setMessages(copy);
-    }
+    const removeMessage = useCallback((key) => {
+        setMessages((current) => {
+            const copy = { ...current };
+            delete copy[key];
+            return copy;
+        });
+    }, [])
+
+    const contextValue = useMemo(() => ({ messages, addMessage, removeMessage }), [addMessage, messages, removeMessage]);
 
     return (
-        <MessagesContext.Provider value={{ messages, addMessage, removeMessage }}>
+        <MessagesContext.Provider value={contextValue}>
             {children}
         </MessagesContext.Provider>
     );

@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useConfig } from "./ConfigContext";
 import translations_hu from "lang/hu";
 
@@ -10,44 +10,44 @@ export const TranslationProvider = ({ children }) => {
     const { getConfig, setConfig } = useConfig();
     const language = getConfig(CONFIG_KEY_LANGUAGE, "en");
 
-    const languages = {
+    const languages = useMemo(() => ({
         "en": { name: "English", code: "gb", locale: "en-GB" },
         "hu": { name: "Hungarian", code: "hu", locale: "hu-HU" }
-    }
+    }), [])
 
-    const translations = {
+    const translations = useMemo(() => ({
         "hu": translations_hu
-    };
+    }), []);
 
     const defaultLanguage = "hu";
 
-    function changeLanguage(newLang) {
+    const changeLanguage = useCallback((newLang) => {
         if (newLang === "en" || translations[newLang]) {
             setConfig(CONFIG_KEY_LANGUAGE, newLang);
         }
-    }
+    }, [setConfig, translations])
 
-    function formatDate(date, lang = language) {
+    const formatDate = useCallback((date, lang = language) => {
         const d = new Date(date);
         const locale = languages[lang]?.locale ?? languages[defaultLanguage].locale
         return d.toLocaleDateString(locale);
-    }
+    }, [language, languages])
 
-    function formatDateTime(date, lang = language) {
+    const formatDateTime = useCallback((date, lang = language) => {
         const d = new Date(date);
         const locale = languages[lang]?.locale ?? languages[defaultLanguage].locale
         return d.toLocaleDateString(locale) + ' ' + d.toLocaleTimeString(locale);
-    }
+    }, [language, languages])
 
-    function formatNumber(num, lang = language) {
+    const formatNumber = useCallback((num, lang = language) => {
         const locale = languages[lang]?.locale ?? languages[defaultLanguage].locale
         return parseFloat(num).toLocaleString(locale);
-    }
+    }, [language, languages])
 
-    function __(text, replace = {}, lang = language) {
+    const __ = useCallback((text, replace = {}, lang = language) => {
         if (lang !== "en") {
-            text = translations[lang][text] ?? text
-            if (!translations[lang][text]) {
+            const translated = translations[lang]?.[text];
+            if (!translated) {
                 const existing = localStorage.getItem("missing_translations")
                 let missing = existing ? JSON.parse(existing) : [];
                 if (!missing.includes(text)) {
@@ -55,15 +55,16 @@ export const TranslationProvider = ({ children }) => {
                     localStorage.setItem("missing_translations", JSON.stringify(missing))
                 }
             }
+            text = translated ?? text
         }
         if (replace) {
             return Object.keys(replace).reduce((carry, current) => carry.replace(new RegExp(`:${current}\\b`, "g"), replace[current]), text);
         } else {
             return text;
         }
-    }
+    }, [language, translations])
 
-    function formatAgo(fmt, replace) {
+    const formatAgo = useCallback((fmt, replace) => {
         if (language === 'hu') {
             const split = replace.time.split(" ")
             switch (split.pop()) {
@@ -85,19 +86,21 @@ export const TranslationProvider = ({ children }) => {
         } else {
             return __(':time ago', replace);
         }
-    }
+    }, [__, language])
+
+    const contextValue = useMemo(() => ({
+        language,
+        languages,
+        __,
+        changeLanguage,
+        formatDate,
+        formatDateTime,
+        formatNumber,
+        formatAgo
+    }), [__, changeLanguage, formatAgo, formatDate, formatDateTime, formatNumber, language, languages]);
 
     return (
-        <TranslationContext.Provider value={{
-            language,
-            languages,
-            __,
-            changeLanguage,
-            formatDate,
-            formatDateTime,
-            formatNumber,
-            formatAgo
-        }}>
+        <TranslationContext.Provider value={contextValue}>
             {children}
         </TranslationContext.Provider>
     );

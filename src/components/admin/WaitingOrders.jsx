@@ -82,14 +82,18 @@ const WaitingOrders = () => {
   }
 
   useEffect(() => {
-    get('orders/waiting')
+    const controller = new AbortController();
+    get('orders/waiting', { signal: controller.signal })
       .then(response => {
         setOrders(response.data)
       })
       .catch(error => {
-        console.warn(error);
-        addMessage("danger", error.statusText);
+        if (error.code !== 'ERR_CANCELED') {
+          console.warn(error);
+          addMessage("danger", error.statusText);
+        }
       })
+    return () => controller.abort();
   }, [addMessage, get, language, refreshIndex])
 
   const assignOrder = (id) => {

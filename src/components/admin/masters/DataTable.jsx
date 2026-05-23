@@ -159,8 +159,9 @@ const DataTable = (props) => {
     setLoading(true);
     try {
       const response = await post(url + "?nolang=true", object)
+      const data = response.data;
       setError({});
-      setObjects([...objects, response]);
+      setObjects((current) => [...current, data]);
       result = true;
     }
     catch (error) {
@@ -183,12 +184,7 @@ const DataTable = (props) => {
       const data = response.data;
       // console.log('DataUpdateEvent data', data);
       setError({});
-      const idx = objects.findIndex((u) => data.id === u.id); // megkeressük a módosított objektum indexét a a listában
-      const newObjects = [...objects]; // lemásoljuk a listát
-      newObjects[idx] = data; // kicseréljük a módosított objektumot az újra.
-
-      // console.log('newObjects', newObjects); // újrarenderelünk
-      setObjects(newObjects); // újrarenderelünk
+      setObjects((current) => current.map((item) => item.id === data.id ? data : item));
       result = true;
 
     }
@@ -201,35 +197,31 @@ const DataTable = (props) => {
     return result;
   };
 
-  const DataDeleteEvent = (object) => {
+  const DataDeleteEvent = async (object) => {
     // Törli a objektumot.
     // Kellene ide egy megerősítés is a kérés kiküldése előtt.
     let result = false;
 
     console.log("DataDeleteEvent", object);
     setLoading(true);
-    deleteX(`${url}/${object.id}`)
-      .then((response) => {
-        // console.log(response);
-        setError({});
-        const idx = objects.findIndex((u) => object.id === u.id); // megkeressük a törölt objektumot
-        const newObjects = [...objects]; // lemásoljuk a listát
-        newObjects.splice(idx, 1); // kitöröljük a törölt objektumot
-        setObjects(newObjects); // újrarenderelelés
-        result = true;
-      })
-      .catch((error) => {
-        setError(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      await deleteX(`${url}/${object.id}`)
+      setError({});
+      setObjects((current) => current.filter((item) => item.id !== object.id));
+      result = true;
+    }
+    catch (error) {
+      setError(error);
+    }
+    finally {
+      setLoading(false);
+    }
     return result;
   };
 
   const ModalCloseEvent = (object) => {
     setError({})
-    setModalState({ ...modalState, visible: false })
+    setModalState((current) => ({ ...current, visible: false }))
   }
 
   // Egy objektumba összegyűjtöttük a függvényeket, amiket a lista hívhat, egy tulajdonságként tudjuk így küldeni a props-nak.

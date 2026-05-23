@@ -17,17 +17,22 @@ const ConfirmRegistration = () => {
 
     useEffect(() => {
         if (realm && !confirmed && !error) {
+            const controller = new AbortController();
             let data = { id: id, token: token }
-            post('/confirm-registration', data)
+            post('/confirm-registration', data, { signal: controller.signal })
                 .then((response) => {
                     setConfirmed(true);
                 }).catch((error) => {
+                    if (error.code === 'ERR_CANCELED') {
+                        return;
+                    }
                     console.warn(error)
                     setError(error.statusText)
                     addMessage("danger", error.statusText);
                 })
+            return () => controller.abort();
         }
-    })
+    }, [addMessage, confirmed, error, id, post, realm, token])
 
     return (
         <div>

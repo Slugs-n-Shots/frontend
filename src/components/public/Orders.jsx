@@ -8,25 +8,25 @@ import "./Orders.css";
 
 const Orders = () => {
 
-  const [loaded, setLoaded] = useState(false);
   const { get } = useApi();
   const [orders, setOrders] = useState([]);
   const { addMessage } = useMessages();
   const { language, __, formatDateTime } = useTranslation();
 
   useEffect(() => {
-    if (true || !loaded) {
-      get('orders/active')
-        .then(response => {
-          setOrders(response.data)
-          setLoaded(true)
-        })
-        .catch(error => {
+    const controller = new AbortController();
+    get('orders/active', { signal: controller.signal })
+      .then(response => {
+        setOrders(response.data)
+      })
+      .catch(error => {
+        if (error.code !== 'ERR_CANCELED') {
           console.warn(error);
           addMessage("danger", error.statusText);
-        })
-    }
-  }, [addMessage, get, loaded, language])
+        }
+      })
+    return () => controller.abort();
+  }, [addMessage, get, language])
   return (
     <article>
       <h2>{__('Orders')}</h2>

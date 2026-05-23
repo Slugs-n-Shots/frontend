@@ -20,7 +20,9 @@ export default function Users() {
           setUsers(response.data);
         }
       } catch (err) {
-        console.log(err);
+        if (err.code !== 'ERR_CANCELED') {
+          console.log(err);
+        }
       }
     };
     getUser();
@@ -28,7 +30,7 @@ export default function Users() {
       isMounted = false;
       controller.abort();
     };
-  });
+  }, [get]);
 
   return (
     <article>
