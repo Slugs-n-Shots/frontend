@@ -1,5 +1,3 @@
-@import url(bootstrap.min.css);
-
 body {
     @media screen and (min-width: 960px) {
         max-width: 90%;
