@@ -12,14 +12,14 @@ Common stack:
 
 ## React working rules
 
-- Use JavaScript for new React code.
+- Use JavaScript for new React code; this overrides the root TypeScript preference for this frontend.
 - Prefer functional components and hooks.
 - Keep components small and focused.
 - Preserve existing component structure and styling approach.
 - Avoid broad UI refactors unless explicitly requested.
 - Avoid changing UI copy unless the task requires it.
 - Do not introduce global state unless needed.
-- Do not introduce new packages unless explicitly requested or clearly justified.
+- Do not use `var`; use `const` by default and `let` only when reassignment is required.
 
 ## Risk tiers
 
