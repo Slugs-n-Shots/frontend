@@ -7,6 +7,7 @@ import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { validateEmail } from "models/MiscHelper";
 import { useConfig } from "contexts/ConfigContext";
+import { guestEndpoints } from "src/api";
 
 
 
@@ -23,7 +24,7 @@ const Password = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Your submit logic here
-    post('forgot-password', { email: email.value })
+    post(guestEndpoints.forgotPassword, { email: email.value })
       .then((response) => {
         addMessage("info", response.data.message);
         navigate(realm_path + '/login')

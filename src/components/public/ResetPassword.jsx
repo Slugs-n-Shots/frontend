@@ -6,6 +6,7 @@ import { Button, Form, Row } from "react-bootstrap";
 import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { validatePassword } from "models/MiscHelper";
+import { guestEndpoints } from "src/api";
 //import { useConfig } from "contexts/ConfigContext";
 
 
@@ -36,7 +37,7 @@ const ResetPassword = () => {
   }
 
   const handleSubmit = (event) => {
-    post('reset-password',
+    post(guestEndpoints.resetPassword,
       {
         id: id,
         token: token,

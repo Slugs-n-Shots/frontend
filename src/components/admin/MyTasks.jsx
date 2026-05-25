@@ -4,6 +4,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import config from "models/config";
 import { Fragment, useEffect, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
+import { staffEndpoints } from "src/api";
 
 const MyTasks = () => {
 
@@ -83,7 +84,7 @@ const MyTasks = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    get('orders/my-tasks', { signal: controller.signal })
+    get(staffEndpoints.ordersMyTasks, { signal: controller.signal })
       .then(response => {
         setOrders(response.data)
       })
@@ -97,7 +98,7 @@ const MyTasks = () => {
   }, [addMessage, get, language, refreshIndex])
 
   const markAsDone = (id) => {
-    post('orders/done/' + Number(id))
+    post(staffEndpoints.orderDone(id))
       .then(response => {
         addMessage("success", "Order marked as done.", {}, { timeOut: 2000 });
         setRefreshIndex((current) => current + 1)
@@ -109,7 +110,7 @@ const MyTasks = () => {
   }
 
   const undoAssignOrder = (id) => {
-    post('orders/undo-assign/' + Number(id))
+    post(staffEndpoints.orderUndoAssign(id))
       .then(response => {
         addMessage("success", "Order assignment reverted", {}, { timeOut: 2000 });
         setRefreshIndex((current) => current + 1)

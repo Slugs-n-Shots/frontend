@@ -4,6 +4,7 @@ import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { useTranslation } from "contexts/TranslationContext";
 import { useConfig } from "contexts/ConfigContext";
+import { guestEndpoints } from "src/api";
 
 export default function Drink({ match }) {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function Drink({ match }) {
   useEffect(() => {
     if (realm) {
       const controller = new AbortController();
-      get(`drinks/${id}`, { params: { lang: language }, signal: controller.signal })
+      get(guestEndpoints.drink(id), { params: { lang: language }, signal: controller.signal })
         .then((response) => {
           const drink = response.data //.user;
           // console.log('drink:', drink);

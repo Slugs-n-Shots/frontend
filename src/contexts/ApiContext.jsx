@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useMemo, useContext, useRef } from 're
 import axios from 'axios';
 import { useConfig } from 'contexts/ConfigContext';
 import { useTranslation } from 'contexts/TranslationContext';
+import { guestEndpoints, staffEndpoints } from 'src/api';
 
 const CONFIG_KEY_TOKEN = 'token';
 
@@ -19,10 +20,11 @@ export const useApi = () => useContext(ApiContext);
 export const ApiProvider = ({ children }) => {
 
   const { language } = useTranslation();
-  const { getConfig, setConfig } = useConfig();
+  const { getConfig, realm, setConfig } = useConfig();
   const refreshPromiseRef = useRef(null);
   // console.log('realm', realm)
   const baseUrl = getConfig('serverURL');
+  const endpoints = realm === 'staff' ? staffEndpoints : guestEndpoints;
 
   const api = useMemo(() => axios.create({
     baseURL: baseUrl
@@ -72,7 +74,7 @@ export const ApiProvider = ({ children }) => {
             originalRequest._retry = true;
             try {
               if (!refreshPromiseRef.current) {
-                refreshPromiseRef.current = axios.get(`${baseUrl}refresh`, {
+                refreshPromiseRef.current = axios.get(`${baseUrl}${endpoints.refresh}`, {
                   headers: {
                     'Authorization': `Bearer ${token}`
                   }
@@ -105,7 +107,7 @@ export const ApiProvider = ({ children }) => {
       api.interceptors.request.eject(requestInterceptor);
       api.interceptors.response.eject(responseInterceptor);
     };
-  }, [api, baseUrl, getConfig, language, setConfig]);
+  }, [api, baseUrl, endpoints.refresh, getConfig, language, setConfig]);
 
   const contextValue = useMemo(() => ({
     get: (url, config = {}) => api.get(url, config),

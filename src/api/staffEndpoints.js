@@ -1,0 +1,18 @@
+export const staffEndpoints = {
+  login: "login",
+  forgotPassword: "forgot-password",
+  resetPassword: "reset-password",
+  refresh: "refresh",
+  me: "me",
+  employees: "employees",
+  employeeRoles: "employees/roles",
+  guests: "guests",
+  drinks: "drinks",
+  categories: "categories",
+  categoryParents: "categories/parents",
+  ordersWaiting: "orders/waiting",
+  ordersMyTasks: "orders/my-tasks",
+  orderAssign: (orderId) => `orders/assign/${Number(orderId)}`,
+  orderDone: (orderId) => `orders/done/${Number(orderId)}`,
+  orderUndoAssign: (orderId) => `orders/undo-assign/${Number(orderId)}`,
+};

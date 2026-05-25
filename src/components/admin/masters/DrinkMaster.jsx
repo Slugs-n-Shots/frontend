@@ -1,4 +1,5 @@
 import DataTable from "components/admin/masters/DataTable";
+import { staffEndpoints } from "src/api";
 
 const DrinkMaster = () => {
 
@@ -22,7 +23,7 @@ const DrinkMaster = () => {
   ];
 
   const masters = {
-    'categories': { url: 'categories', key: 'id', value: 'name' }
+    'categories': { url: staffEndpoints.categories, key: 'id', value: 'name' }
   }
 
   const model = {
@@ -50,7 +51,7 @@ const DrinkMaster = () => {
 
   return (
     <DataTable
-      url="drinks"
+      url={staffEndpoints.drinks}
       model={model}
       fields={fields}
       masters={masters}

@@ -6,6 +6,7 @@ import { Button, Form, Row } from "react-bootstrap";
 import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { validatePassword, validateEmail } from "models/MiscHelper";
+import { guestEndpoints } from "src/api";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default function Register() {
     //   event.preventDefault();
     //   event.stopPropagation();
     // }
-    post('register',
+    post(guestEndpoints.register,
       {
         first_name: firstName.value,
         last_name: lastName.value,

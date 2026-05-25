@@ -1,4 +1,5 @@
 import DataTable from "components/admin/masters/DataTable";
+import { staffEndpoints } from "src/api";
 
 const DrinkCategoryMaster = () => {
 
@@ -10,7 +11,7 @@ const DrinkCategoryMaster = () => {
   ];
 
   const masters = {
-    'categories': { url: 'categories/parents', key: 'id', value: 'name', nullable: true, nullText: "No Parent" }
+    'categories': { url: staffEndpoints.categoryParents, key: 'id', value: 'name', nullable: true, nullText: "No Parent" }
   }
 
   const model = {
@@ -34,7 +35,7 @@ const DrinkCategoryMaster = () => {
 
   return (
     <DataTable
-      url="categories"
+      url={staffEndpoints.categories}
       model={model}
       fields={fields}
       masters={masters}

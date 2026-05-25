@@ -4,6 +4,7 @@ import { useMessages } from "contexts/MessagesContext";
 import { useTranslation } from "contexts/TranslationContext";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { guestEndpoints } from "src/api";
 
 const ConfirmRegistration = () => {
 
@@ -19,7 +20,7 @@ const ConfirmRegistration = () => {
         if (realm && !confirmed && !error) {
             const controller = new AbortController();
             let data = { id: id, token: token }
-            post('/confirm-registration', data, { signal: controller.signal })
+            post(guestEndpoints.confirmRegistration, data, { signal: controller.signal })
                 .then((response) => {
                     setConfirmed(true);
                 }).catch((error) => {

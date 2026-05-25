@@ -4,17 +4,21 @@ import NoPage from "./NoPage";
 import { useMessages } from "contexts/MessagesContext";
 import { useApi } from "contexts/ApiContext";
 import { useTranslation } from "contexts/TranslationContext";
+import { useConfig } from "contexts/ConfigContext";
+import { guestEndpoints, staffEndpoints } from "src/api";
 
 const Profile = () => {
   const { user } = useUser();
   const { addMessage } = useMessages();
   const { get, deleteX } = useApi(); // Renamed delete to deleteApi because 'delete' is a reserved keyword
   const { __ } = useTranslation();
+  const { realm } = useConfig();
   const [displayUser, setDisplayUser] = useState(user);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const endpoints = realm === 'staff' ? staffEndpoints : guestEndpoints;
 
   const refresh = () => {
-    get("me")
+    get(endpoints.me)
       .then((response) => {
         const user = response.data;
         setDisplayUser(user);
@@ -30,7 +34,7 @@ const Profile = () => {
   }
 
   const handleDeleteConfirmation = () => {
-    deleteX("me")
+    deleteX(endpoints.me)
       .then(() => {
         // Handle success, you may want to redirect or show a message
         console.log("User deleted successfully");

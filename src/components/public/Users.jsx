@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import DisplayUser from "./DisplayUser";
 import { useApi } from "contexts/ApiContext";
+import { guestEndpoints } from "src/api";
 export default function Users() {
   const [users, setUsers] = useState([]);
   const { get } = useApi();
@@ -11,7 +12,7 @@ export default function Users() {
 
     const getUser = async () => {
       try {
-        const response = await get("/employees", {
+        const response = await get(guestEndpoints.employees, {
           signal: controller.signal,
         });
 

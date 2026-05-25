@@ -32,12 +32,14 @@ Fontos meglévő fájlok:
 
 ## Javasolt integrációs sorrend
 
-### 0. fázis: API inventory és endpoint konstansok
+### 1. fázis: API inventory és endpoint konstansok
 
 Feature UI munka előtt készüljön egy kicsi API endpoint inventory.
 
-Javasolt fájl:
-- `src/api/endpoints.js`
+Javasolt fájlok:
+- `src/api/guestEndpoints.js`
+- `src/api/staffEndpoints.js`
+- `src/api/index.js`
 
 Maradjon egyszerű JavaScript:
 
@@ -64,7 +66,7 @@ export const guestEndpoints = {
 };
 ```
 
-A staff endpointokat ugyanebbe a fájlba érdemes felvenni, amikor a staff szelet elkezdődik.
+A staff endpointokat külön staff inventory fájlba érdemes felvenni, amikor a staff szelet elkezdődik.
 
 Miért:
 - kevesebb szétszórt string változás
@@ -75,7 +77,7 @@ Ellenőrzés:
 - csak akkor kell külön endpoint unit teszt, ha a helper függvények nem triviálisak
 - egyébként feature teszteken keresztül érdemes ellenőrizni
 
-### 1. fázis: Profil, compliance, GDPR
+### 2. fázis: Profil, compliance, GDPR
 
 Hatókör:
 - guest profiladatok megjelenítésének frissítése
@@ -119,7 +121,7 @@ Hasznos tesztek:
 - export letölthető JSON blobot hoz létre
 - regisztrációhoz kötelező az `is_over_18`
 
-### 2. fázis: Rendelésleadási fizetési mód
+### 3. fázis: Rendelésleadási fizetési mód
 
 Hatókör:
 - rendelésleadási mód hozzáadása a kosárhoz
@@ -150,7 +152,7 @@ Hasznos tesztek:
 - választott fizetési módnál bekerül a payment mode mező
 - `409` recommended pay-now válasz láthatóvá válik, és nem üríti a kosarat
 
-### 3. fázis: Guest asztalélmény
+### 4. fázis: Guest asztalélmény
 
 Hatókör:
 - szabad asztalok listája
@@ -200,7 +202,7 @@ Hasznos tesztek:
 - 409 close conflict fizetetlen tételeket jelez
 - owner spending-limit form helyesen küld `null` és nemnegatív egész értékeket
 
-### 4. fázis: Guest fizetések és nyugták
+### 5. fázis: Guest fizetések és nyugták
 
 Hatókör:
 - saját pending order detail kiválasztás
@@ -239,7 +241,7 @@ Hasznos tesztek:
 - payer form megőrzi az opcionális mezőket
 - nyugta route megjeleníti a számviteli snapshot mezőket
 
-### 5. fázis: Staff/admin asztalok, rendelések, fizetettnek jelölés
+### 6. fázis: Staff/admin asztalok, rendelések, fizetettnek jelölés
 
 Hatókör:
 - admin asztal CRUD
@@ -275,7 +277,7 @@ Hasznos tesztek:
 - staff limit override megjeleníti az owner, staff és effektív értékeket
 - mark-paid elküldi a kiválasztott detail ID-ket és a szükséges payer/payment metaadatokat
 
-### 6. fázis: Riportok
+### 7. fázis: Riportok
 
 Hatókör:
 - riportlista
@@ -305,10 +307,11 @@ Minden szeletnél ezeket kell hozzáadni vagy megőrizni:
 
 Ez a dokumentum maradhat áttekintő terv. Amikor egy-egy munka elkezdődik, készüljön fókuszáltabb terv:
 
-- `frontend/docs/profile-gdpr-plan.md`
-- `frontend/docs/table-flow-plan.md`
-- `frontend/docs/payment-receipt-plan.md`
-- `frontend/docs/staff-admin-workflow-plan.md`
+- `frontend/docs/01-api-endpoint-inventory-plan.md`
+- `frontend/docs/02-profile-gdpr-plan.md`
+- `frontend/docs/04-table-flow-plan.md`
+- `frontend/docs/05-payment-receipt-plan.md`
+- `frontend/docs/06-staff-admin-workflow-plan.md`
 
 Minden fókuszált dokumentum tartalmazza:
 - használt backend endpointok
@@ -320,9 +323,9 @@ Minden fókuszált dokumentum tartalmazza:
 
 ## Javasolt első szelet
 
-Kezdés: 0. és 1. fázis.
+Kezdés: 1. és 2. fázis.
 
-1. `src/api/endpoints.js` hozzáadása a guest profil/GDPR endpointokhoz.
+1. `src/api/guestEndpoints.js`, `src/api/staffEndpoints.js` és `src/api/index.js` hozzáadása a guest profil/GDPR endpointokhoz.
 2. `Profile.jsx` frissítése a backend compliance mezők megjelenítésére.
 3. Profilkép feltöltés/törlés hozzáadása.
 4. Anonimizálási check és megerősített anonimizálás hozzáadása.

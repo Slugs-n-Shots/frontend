@@ -4,6 +4,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import config from "models/config";
 import { Fragment, useEffect, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
+import { staffEndpoints } from "src/api";
 
 const WaitingOrders = () => {
 
@@ -83,7 +84,7 @@ const WaitingOrders = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    get('orders/waiting', { signal: controller.signal })
+    get(staffEndpoints.ordersWaiting, { signal: controller.signal })
       .then(response => {
         setOrders(response.data)
       })
@@ -97,7 +98,7 @@ const WaitingOrders = () => {
   }, [addMessage, get, language, refreshIndex])
 
   const assignOrder = (id) => {
-    post('orders/assign/' + Number(id))
+    post(staffEndpoints.orderAssign(id))
     .then(response => {
       addMessage("success", "Order assigned to you", {}, {timeOut: 2000});
       setRefreshIndex((current) => current + 1)

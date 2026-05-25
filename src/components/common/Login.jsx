@@ -8,6 +8,7 @@ import { useMessages } from "contexts/MessagesContext";
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { useApi } from "contexts/ApiContext";
 import { useConfig } from "contexts/ConfigContext";
+import { guestEndpoints, staffEndpoints } from "src/api";
 
 const Login = () => {
   const { __ } = useTranslation();
@@ -17,6 +18,7 @@ const Login = () => {
   const { post } = useApi();
   const navigate = useNavigate();
   const { realm, realm_path } = useConfig();
+  const endpoints = realm === 'staff' ? staffEndpoints : guestEndpoints;
 
   // State variables to store email and password
   const [email, setEmail] = useState("");
@@ -32,7 +34,7 @@ const Login = () => {
     event.preventDefault();
     // Here you can perform validation, authentication, etc.
 
-    post("login", { email: email, password: password })
+    post(endpoints.login, { email: email, password: password })
       .then((response) => {
         console.log('success', response)
         const user = response.data.user;

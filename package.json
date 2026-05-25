@@ -34,7 +34,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.4.0",
     "jsdom": "^29.1.1",
+    "typescript": "^6.0.3",
     "vite": "^8.0.11",
     "vitest": "^4.1.6"
   },
@@ -42,10 +44,15 @@
     "postinstall": "node scripts/init-env.mjs",
     "dev": "vite",
     "start": "vite",
+    "lint": "eslint .",
+    "typecheck": "tsc --project tsconfig.check.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "build": "vite build",
     "preview": "vite preview"
+  },
+  "overrides": {
+    "postcss": "^8.5.14"
   },
   "browserslist": {
     "production": [

@@ -4,6 +4,7 @@ import { useTranslation } from "contexts/TranslationContext";
 import { Fragment, useEffect, useState } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
 import config from "models/config";
+import { guestEndpoints } from "src/api";
 import "./Orders.css";
 
 const Orders = () => {
@@ -15,7 +16,7 @@ const Orders = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    get('orders/active', { signal: controller.signal })
+    get(guestEndpoints.activeOrders, { signal: controller.signal })
       .then(response => {
         setOrders(response.data)
       })

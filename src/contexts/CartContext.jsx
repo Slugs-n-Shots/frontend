@@ -3,6 +3,7 @@ import { useConfig } from "./ConfigContext";
 import { useApi } from "./ApiContext";
 import { useMessages } from "./MessagesContext";
 import { useTranslation } from "./TranslationContext";
+import { guestEndpoints } from "src/api";
 
 const CartContext = createContext();
 
@@ -34,7 +35,7 @@ export const CartProvider = ({ children }) => {
   const loadDrinks = useCallback(async (signal) => {
     if ((!loaded || loadedLanguage !== language) && realm) {
       try {
-        const response = await get("menu-tree", { params: { lang: language }, signal });
+        const response = await get(guestEndpoints.menuTree, { params: { lang: language }, signal });
         const drinks = response.data;
         const drinkList = updateDrinkList(drinks);
         setMenu(drinks);
@@ -58,7 +59,7 @@ export const CartProvider = ({ children }) => {
   const makeOrder = async () => {
     try {
       const cart = Object.keys(cartItems ?? {}).map((key) => ({ ...(parseKey(key)), ordered_quantity: cartItems[key] }));
-      await post('/orders', { cart });
+      await post(guestEndpoints.orders, { cart });
       // empty cart only after successful order
       setConfig(CART_KEY, null);
       setCartItems({});

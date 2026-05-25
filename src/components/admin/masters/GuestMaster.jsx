@@ -1,4 +1,5 @@
 import DataTable from "components/admin/masters/DataTable";
+import { staffEndpoints } from "src/api";
 
 const GuestMaster = () => {
 
@@ -37,7 +38,7 @@ const GuestMaster = () => {
 
   return (
     <DataTable
-      url="guests"
+      url={staffEndpoints.guests}
       model={model}
       fields={fields}
       masters={masters}

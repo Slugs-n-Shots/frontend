@@ -8,6 +8,7 @@ import { useApi } from "contexts/ApiContext";
 import { useMessages } from "contexts/MessagesContext";
 import { validateEmail } from "models/MiscHelper";
 import { useConfig } from "contexts/ConfigContext";
+import { guestEndpoints } from "src/api";
 
 const ResendRegistration = () => {
     // const { Navigate } = useNavigate();
@@ -21,7 +22,7 @@ const ResendRegistration = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        post('verify/resend', { email: email.value })
+        post(guestEndpoints.resendRegistration, { email: email.value })
             .then((response) => {
                 console.log(response)
                 addMessage("info", response.data.message);

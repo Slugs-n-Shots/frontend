@@ -1,17 +1,21 @@
 import React, { createContext, useContext, useState } from "react";
 import { useApi } from "./ApiContext";
+import { useConfig } from "./ConfigContext";
 import { useMessages } from "./MessagesContext";
+import { guestEndpoints, staffEndpoints } from "src/api";
 
 const ProfileContext = createContext();
 
 export const ProfileProvider = ({ children }) => {
   const { get, deleteX } = useApi();
+  const { realm } = useConfig();
   const { addMessage } = useMessages();
   const [displayUser, setDisplayUser] = useState(null);
+  const endpoints = realm === 'staff' ? staffEndpoints : guestEndpoints;
 
 
   const getMe = () => {
-    get("me")
+    get(endpoints.me)
       .then((response) => {
         const user = response.data;
         setDisplayUser(user);
@@ -23,7 +27,7 @@ export const ProfileProvider = ({ children }) => {
   };
 
   const deleteUser = () => {
-    deleteX("me")
+    deleteX(endpoints.me)
       .then(() => {
         console.log("User deleted successfully");
         setDisplayUser(null);
