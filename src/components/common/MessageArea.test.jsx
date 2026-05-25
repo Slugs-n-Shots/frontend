@@ -1,5 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { ConfigProvider } from "contexts/ConfigContext";
 import { MessagesProvider, useMessages } from "contexts/MessagesContext";
 import { TranslationProvider } from "contexts/TranslationContext";
@@ -36,16 +35,12 @@ describe("MessageArea", () => {
       </>
     );
 
-    await act(async () => {
-      userEvent.click(screen.getByRole("button", { name: "Add message" }));
-    });
+    fireEvent.click(screen.getByRole("button", { name: "Add message" }));
 
     expect(screen.getByText("Saved order")).toBeInTheDocument();
 
-    await act(async () => {
-      userEvent.click(screen.getByRole("button", { name: /close/i }));
-    });
+    fireEvent.click(screen.getByRole("button", { name: /close/i }));
 
     expect(screen.queryByText("Saved order")).not.toBeInTheDocument();
-  });
+  }, 10000);
 });

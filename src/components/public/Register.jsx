@@ -23,6 +23,7 @@ export default function Register() {
   const [email, setEmail] = useState({ value: '', msg: '', touched: false, valid: false });
   const [password, setPassword] = useState({ value: '', msg: '', touched: false, valid: false });
   const [passwordConfirm, setPasswordConfirm] = useState({ value: '', msg: '', touched: false, valid: false });
+  const [isOver18, setIsOver18] = useState(false);
   const inputRef = useRef();
 
   const toggleShowPasswords = (event) => {
@@ -43,13 +44,13 @@ export default function Register() {
         last_name: lastName.value,
         email: email.value,
         password: password.value,
+        is_over_18: isOver18,
       })
       .then((response) => {
         addMessage("success", response.data.message);
         navigate('/login')
       })
       .catch((error) => {
-        console.warn(error);
         addMessage("danger", error.statusText);
       });
 
@@ -148,6 +149,9 @@ export default function Register() {
           setPasswordsMatch(e.target.value === password.value)
         }
         break;
+      case 'inputIsOver18':
+        setIsOver18(e.target.checked);
+        break;
       default: ;
     }
   }
@@ -159,7 +163,8 @@ export default function Register() {
     lastName.touched && lastName.valid &&
     email.touched && email.valid &&
     password.touched && password.valid &&
-    passwordConfirm.touched && passwordConfirm.valid
+    passwordConfirm.touched && passwordConfirm.valid &&
+    isOver18
 
   return (
     <div className="container">
@@ -246,6 +251,16 @@ export default function Register() {
                     </Form.Group>
                   </div>
                 </Row>
+                <Form.Group className="mb-3">
+                  <Form.Check id="inputIsOver18" checked={isOver18}
+                    onChange={handleChange}
+                    type="checkbox" label={__('I confirm I am over 18')}
+                    required
+                    isInvalid={validated && !isOver18}
+                    feedback={__('You must confirm you are over 18')}
+                    feedbackType="invalid"
+                  />
+                </Form.Group>
                 <div className="mt-4 mb-0">
                   <div className="d-grid"><Button {...(formIsValid ? {} : { disabled: true })} type="submit" className=" btn-primary btn-block" >{__('Create Account')}</Button></div>
                 </div>

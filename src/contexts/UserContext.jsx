@@ -1,8 +1,14 @@
 
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { useConfig } from "contexts/ConfigContext";
 
-const CONFIG_KEY_USER = 'user';
+export const CONFIG_KEY_USER = 'user';
+const USER_ROLES = {
+    'waiter': 1,
+    'bartender': 2,
+    'backoffice': 4,
+    'admin': 7,
+};
 
 const UserContext = createContext();
 
@@ -12,41 +18,39 @@ export const UserProvider = ({ children }) => {
 
     const user = getConfig(CONFIG_KEY_USER, null);
 
-    const USER_ROLES = {
-        'waiter': 1,
-        'bartender': 2,
-        'backoffice': 4,
-        'admin': 7,
-    }
-
-    const login = (userData) => {
+    const login = useCallback((userData) => {
         setConfig(CONFIG_KEY_USER, userData);
-    };
+    }, [setConfig]);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         cleanupConfig();
-    };
+    }, [cleanupConfig]);
 
-    const userIsLoggedIn = () => user != null && user.id != null;
-    const userIsStaffMember = () => userIsLoggedIn() && user.hasOwnProperty('role_code') && realm === 'staff';
+    const userIsLoggedIn = useCallback(() => user != null && user.id != null, [user]);
+    const userIsStaffMember = useCallback(
+        () => user != null && user.id != null && user.hasOwnProperty('role_code') && realm === 'staff',
+        [realm, user]
+    );
 
-    const userHasRole = (role) => userIsStaffMember()
+    const userHasRole = useCallback((role) => userIsStaffMember()
         && (USER_ROLES[role] !== undefined)
-        && (user.role_code & USER_ROLES[role]) === USER_ROLES[role];
+        && (user.role_code & USER_ROLES[role]) === USER_ROLES[role], [user, userIsStaffMember]);
 
     // ha legalább az egyik jogosultsága megvan
-    const userHasRoles = (roles) => roles.some(userHasRole)
+    const userHasRoles = useCallback((roles) => roles.some(userHasRole), [userHasRole])
+
+    const contextValue = useMemo(() => ({
+        user,
+        login,
+        logout,
+        userIsLoggedIn,
+        userIsStaffMember,
+        userHasRole,
+        userHasRoles,
+    }), [login, logout, user, userHasRole, userHasRoles, userIsLoggedIn, userIsStaffMember]);
 
     return (
-        <UserContext.Provider value={{
-            user,
-            login,
-            logout,
-            userIsLoggedIn,
-            userIsStaffMember,
-            userHasRole,
-            userHasRoles,
-        }}>
+        <UserContext.Provider value={contextValue}>
             {children}
         </UserContext.Provider>
     );

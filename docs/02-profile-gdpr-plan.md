@@ -8,6 +8,23 @@ Kapcsolódó áttekintő terv:
 Risk tier:
 - Tier 2, mert auth állapotot, személyes adatokat, GDPR exportot/anonimizálást és fájlfeltöltést érint.
 
+## Haladás
+
+Elkészült:
+- regisztrációs `is_over_18` checkbox és `POST register` payload mező
+- profil `GET me` betöltés guest/staff realmen
+- guest compliance mezők megjelenítése profilban
+- staff profilban guest-only compliance blokk elrejtése
+- `address` mező használata a korábbi `adress` helyett
+- profilkép feltöltés/törlés guest profilban, `multipart/form-data` `picture` mezővel
+- profilkép megjelenítése a guest profilban
+- saját adat export JSON blob letöltésként, console log nélkül
+- anonimizálási check és megerősített anonimizálás
+- sikeres anonimizálás utáni guest auth/user cleanup és publikus route navigáció
+
+Hátra van:
+- végső regressziós ellenőrzés és manuális UX finomítás, ha szükséges
+
 ## Cél
 
 A 2. fázis célja, hogy a guest profil és regisztráció kezelje a backend új compliance/GDPR mezőit és endpointjait:
@@ -27,6 +44,9 @@ Nem cél ebben a szeletben:
 - backend módosítás
 
 ## Backend szerződés
+
+Backend API hívások szignatúrájának ellenőrzésekor a generált OpenAPI dokumentációt kell használni:
+- `backend/storage/api-docs/api-docs.json`
 
 Guest profil:
 - `GET me`

@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useMemo, useContext, useRef } from 'react';
+import React, { createContext, useLayoutEffect, useMemo, useContext, useRef } from 'react';
 import axios from 'axios';
 import { useConfig } from 'contexts/ConfigContext';
 import { useTranslation } from 'contexts/TranslationContext';
@@ -30,13 +30,14 @@ export const ApiProvider = ({ children }) => {
     baseURL: baseUrl
   }), [baseUrl]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const requestInterceptor = api.interceptors.request.use(
       async (_config) => {
         const token = getConfig(CONFIG_KEY_TOKEN)
+        const isFormData = typeof FormData !== 'undefined' && _config.data instanceof FormData;
         _config.params = { ..._config.params, lang: language }
         _config.baseURL = baseUrl;
-        _config.headers.setContentType('application/json', true)
+        _config.headers.setContentType(isFormData ? undefined : 'application/json', true)
         if (token) {
           _config.headers.Authorization = `Bearer ${token}`;
         }

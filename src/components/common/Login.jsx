@@ -36,9 +36,7 @@ const Login = () => {
 
     post(endpoints.login, { email: email, password: password })
       .then((response) => {
-        console.log('success', response)
         const user = response.data.user;
-        console.log(user);
         login(user);
         navigate(realm_path + "/");
       })

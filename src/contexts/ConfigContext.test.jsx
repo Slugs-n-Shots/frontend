@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { ConfigProvider, useConfig } from "./ConfigContext";
+import { UserProvider, useUser } from "./UserContext";
 
 const ConfigProbe = () => {
   const { realm, realm_path, getConfig } = useConfig();
@@ -13,6 +14,17 @@ const ConfigProbe = () => {
       <dt>server</dt>
       <dd>{getConfig("serverURL")}</dd>
     </dl>
+  );
+};
+
+const UserProbe = () => {
+  const { user, userIsLoggedIn } = useUser();
+
+  return (
+    <div>
+      <span>{user?.email ?? "no-user"}</span>
+      <span>{userIsLoggedIn() ? "logged-in" : "logged-out"}</span>
+    </div>
   );
 };
 
@@ -43,4 +55,24 @@ describe("ConfigProvider", () => {
     expect(screen.getByText("/admin")).toBeInTheDocument();
     expect(screen.getByText("http://slugs-n-shots.test/api/staff/")).toBeInTheDocument();
   });
+
+  test("restores guest user from localStorage after reload", () => {
+    window.history.pushState({}, "", "/profile");
+    localStorage.setItem("config", JSON.stringify({
+      token: "guest-token",
+      user: { id: 1, email: "guest@example.com" },
+    }));
+
+    render(
+      <ConfigProvider>
+        <UserProvider>
+          <UserProbe />
+        </UserProvider>
+      </ConfigProvider>
+    );
+
+    expect(screen.getByText("guest@example.com")).toBeInTheDocument();
+    expect(screen.getByText("logged-in")).toBeInTheDocument();
+  });
+
 });
