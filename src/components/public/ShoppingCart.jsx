@@ -9,7 +9,6 @@ export default function ShoppingCart() {
   const { detailedCartItems, removeFromCart, addToCart, calculateCartTotal, makeOrder } = useCart();
   const { __, formatNumber } = useTranslation();
   const cartItems = detailedCartItems();
-  console.log('cartItems', cartItems)
   return (
     <div>
       <h1>{__('Shopping Cart')}</h1>

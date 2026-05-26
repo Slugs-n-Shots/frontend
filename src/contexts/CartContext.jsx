@@ -65,7 +65,11 @@ export const CartProvider = ({ children }) => {
       setCartItems({});
       addMessage("success", "Thanks for your order! Our bartenders are on it.");
     } catch (error) {
-      console.warn('makeOrder', error);
+      if (isPerGuestSpendingLimitPayNowConflict(error)) {
+        addMessage("warning", error.response.data.message);
+        return;
+      }
+
       addMessage("danger", "Unable to complete your order. Please try again.");
     }
   }
@@ -257,6 +261,15 @@ const parseKey = (key) => {
   const quantity = Number(keyQuantity);
   const unit = keyUnit === "" ? null : keyUnit;
   return { drink_id, quantity, unit };
+};
+
+const isPerGuestSpendingLimitPayNowConflict = (error) => {
+  const data = error.response?.data;
+
+  return error.response?.status === 409
+    && data?.code === "per_guest_spending_limit_exceeded"
+    && data?.recommended_action === "pay_now"
+    && typeof data?.message === "string";
 };
 
 export const useCart = () => useContext(CartContext);
